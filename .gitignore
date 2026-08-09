@@ -6,6 +6,7 @@ __pycache__/
 *.py[cod]
 *.egg-info/
 data/
+verify_shots/
 artifacts/*
 !artifacts/.gitkeep
 !artifacts/example-preview.json
