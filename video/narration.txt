@@ -1,0 +1,15 @@
+Incident response often stalls outside the system. An operator opens a vendor ticket, waits on hold, repeats context, and then copies unstructured notes back into the incident channel. IncidentBridge turns that delay into one controlled, authorized phone workflow.
+
+The key design choice is simple: calls become evidence, never authority. IncidentBridge can gather operational facts, but it can never declare the service recovered.
+
+Before any call, the request is validated for bounded incident identifiers, UTC timestamps, an authorized business recipient, and secret-like content. Preview is the default. It masks the recipient and shows the exact CALL-E task, result schema, idempotency key, and decision boundary without creating a call.
+
+Live execution requires four independent gates: explicit execute intent, confirmation that the recipient is authorized, an exact E.164 allowlist match, and a server-side API credential. Before dispatch, IncidentBridge writes a durable SQLite reservation. If the provider result is ambiguous, the reservation is locked for reconciliation instead of automatically dialing again.
+
+This evidence console exposes all three paths. The first is a real CALL-E provider run. The authorized number was unavailable, so CALL-E returned task completed false after eight seconds. IncidentBridge routed it to needs human, kept incident closed false, and made zero automatic retries.
+
+The second path is the safe preview. No call exists, and recovery remains human-owned. The third is a deterministic acknowledged simulation: a vendor ticket and status are captured, but even then incident closed remains false until local health checks and the incident commander verify recovery.
+
+The implementation uses the published CALL-E Python SDK at runtime, not a placeholder. Eighteen tests pass with ninety-three point four nine percent coverage. The integration suite sends the real SDK through a loopback HTTP server and verifies the create-call request, bearer authentication, idempotency header, strict schema, and status polling.
+
+IncidentBridge is open source, MIT licensed, and contributed to CALL-E's official phone-agent repository. It gives operators a reusable pattern for real-world phone automation with consent, exact authorization, duplicate prevention, structured evidence, and a hard human decision boundary.

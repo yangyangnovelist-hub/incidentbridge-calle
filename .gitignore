@@ -7,6 +7,8 @@ __pycache__/
 *.egg-info/
 data/
 verify_shots/
+video/build/
+video/*.mp4
 artifacts/*
 !artifacts/.gitkeep
 !artifacts/example-preview.json
