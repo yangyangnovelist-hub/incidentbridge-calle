@@ -1,0 +1,6 @@
+calle-ai==0.2.0
+
+[dev]
+pytest<9,>=8.3
+pytest-cov<7,>=5
+ruff<1,>=0.9

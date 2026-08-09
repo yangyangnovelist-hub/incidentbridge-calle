@@ -1,0 +1,2 @@
+[console_scripts]
+incidentbridge = incidentbridge.cli:main
