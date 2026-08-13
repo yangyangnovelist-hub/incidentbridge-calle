@@ -76,7 +76,7 @@ The implementation uses the published CALL-E Python SDK at runtime, not a placeh
 
 20
 00:01:53,813 --> 00:01:58,120
-Eighteen tests pass with ninety-three point four nine percent coverage.
+Nineteen tests pass with ninety-two point two nine percent coverage.
 
 21
 00:01:58,240 --> 00:02:09,436
@@ -89,4 +89,3 @@ IncidentBridge is open source, MIT licensed, and contributed to CALL-E's officia
 23
 00:02:15,274 --> 00:02:25,609
 It gives operators a reusable pattern for real-world phone automation with consent, exact authorization, duplicate prevention, structured evidence, and a hard human decision boundary.
-
