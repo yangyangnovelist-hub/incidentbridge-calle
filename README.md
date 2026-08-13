@@ -115,6 +115,15 @@ with 0.85 confidence, and produced a real provider call ID. IncidentBridge treat
 `needs_human`, keeps `incident_closed: "false"`, and does not auto-retry. The redacted evidence is in
 [`artifacts/calle-live-no-answer.json`](artifacts/calle-live-no-answer.json).
 
+## Rebuild the demo narration
+
+The demo uses the Apache-2.0-licensed Kokoro-82M `bm_george` voice. It does not clone a real
+person. Each generated cue is pitch-preservingly fitted to its reviewed subtitle slot:
+
+```bash
+HF_HUB_DISABLE_XET=1 uv run --script scripts/synthesize-demo-narration.py
+```
+
 ## Scope
 
 IncidentBridge coordinates a single business support conversation. It is not emergency response,
