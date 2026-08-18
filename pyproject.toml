@@ -11,6 +11,7 @@ dev = ["pytest>=8.3,<9", "pytest-cov>=5,<7", "ruff>=0.9,<1"]
 
 [project.scripts]
 incidentbridge = "incidentbridge.cli:main"
+incidentbridge-web = "incidentbridge.web:main"
 
 [build-system]
 requires = ["setuptools>=75", "wheel"]
@@ -21,6 +22,9 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+incidentbridge = ["operator.html"]
 
 [tool.pytest.ini_options]
 addopts = "-q --strict-markers"
