@@ -32,7 +32,7 @@ conversation data.
 
 Current reproducible checks:
 
-- 19 automated tests pass with 92.29% coverage.
+- GitHub Actions verifies Ruff plus **21 automated tests at 92.37% coverage**, above the enforced 90% gate.
 - The published `calle-ai==0.2.0` SDK is exercised at runtime through the integration suite.
 - A real CALL-E provider call ID is preserved in the redacted public fail-closed artifact.
 - The implementation has completed upstream maintainer review and is merged into CALL-E's official
