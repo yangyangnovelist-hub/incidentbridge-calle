@@ -29,3 +29,9 @@ jobs:
 
       - name: Safety regression suite
         run: uv run pytest --cov=src/incidentbridge --cov-report=term-missing --cov-fail-under=90
+
+      - name: Demo source syntax
+        run: |
+          node --check scripts/record-demo.mjs
+          node --check scripts/verify-static-demo.mjs
+          bash -n scripts/build-demo-v2.sh
