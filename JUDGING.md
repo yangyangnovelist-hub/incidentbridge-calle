@@ -9,9 +9,11 @@ IncidentBridge is a consent-first CALL-E agent for one bounded real-world task: 
 - Local operator console: `uv run incidentbridge-web` → `http://127.0.0.1:8766/`
 - Official CALL-E contribution: https://github.com/CALLE-AI/awesome-phone-call-agents/pull/132 — **merged**
 - Official merged app: https://github.com/CALLE-AI/awesome-phone-call-agents/tree/main/apps/python/incidentbridge
+- Adjacent official patterns: `PRIOR-ART.md`
 - Safe reproduction path: `TESTING.md`
 - Core safety regression tests: `tests/test_policy.py`
 - Operator-console tests: `tests/test_web.py`
+- Consented live-runner tests: `tests/test_live_demo.py`
 - Runtime integration: `tests/test_sdk_runtime.py`
 
 ## 1. Real World Impact
@@ -57,7 +59,7 @@ That distinction changes the data contract and the safety model:
 | proves a human on our side has been reached | proves vendor evidence is bound to the exact approved call and corroborated by recipient transcript |
 | may change internal ownership state | **never** changes recovery state or closes the incident |
 
-The product therefore complements PagerDuty-style alerting and internal voice escalation instead of competing with them.
+The official CALL-E repository contains a Zapier `incident-escalation` recipe for this internal paging pattern. It also contains LineCanary, which performs synthetic monitoring of phone lines and voice agents. IncidentBridge is complementary to both: it handles **external vendor evidence without external recovery authority**. Direct references and a side-by-side comparison are in `PRIOR-ART.md`.
 
 ## 2. Quality of the Idea
 
@@ -76,7 +78,7 @@ IncidentBridge treats phone automation as a safety-critical state machine:
 
 The contribution is reusable: the official CALL-E repository accepted IncidentBridge as a community app after maintainer review, so the safety pattern is available to other builders rather than existing only as a competition-specific demo.
 
-A separate `LIVE-SUCCESS-DEMO.md` protocol shows how to validate the full success path with a real CALL-E call, a synthetic incident, and a consenting authorized recipient without pretending that the tester is a real vendor.
+For a public real-success proof, `incidentbridge-consented-live-demo` fixes the scenario to synthetic data, requires an owned or explicitly authorized recipient and exact consent phrase, and emits a public artifact only after a genuine `vendor_acknowledged` route with `incident_closed=false`.
 
 ## 3. Technical Implementation
 
@@ -88,7 +90,9 @@ A separate `LIVE-SUCCESS-DEMO.md` protocol shows how to validate the full succes
 - Unbound, incomplete, low-confidence or uncorroborated results fail closed to `needs_human`.
 - Ticket corroboration rejects blank/`unknown` IDs and prefix/sub-string false matches while tolerating punctuation differences such as `SUP-4821` vs `SUP 4821`.
 - The local browser operator surface uses server-side live permissions, exact-number allowlisting, typed confirmation, loopback-only live binding, and non-loopback Host rejection while reusing the same execution path as the CLI.
-- **GitHub Actions verified Ruff plus 27 passing tests at 93.14% total coverage**, above the enforced 90% gate. The operator-console module is 95% covered.
+- The one-shot consented live runner is fixed to synthetic incident content, refuses to overwrite existing public proof, creates no public success artifact on a failed/ambiguous route, and instructs the operator not to blindly retry.
+- **GitHub Actions verified Ruff plus 33 passing tests at 93.80% total coverage**, above the enforced 90% gate. The live runner is 99% covered and operator console 95% covered.
+- CI also syntax-checks the judge-focused Playwright recording source and demo build script.
 - Integration tests exercise the actual SDK request/poll boundary through loopback HTTP rather than replacing the SDK with an internal mock.
 
 ### Independent upstream review
@@ -102,7 +106,7 @@ Both were fixed and regression-tested. The contribution was merged into the offi
 
 ## 4. Product Experience & Demo
 
-IncidentBridge now has three complementary product surfaces:
+IncidentBridge has three complementary product surfaces:
 
 1. **Public evidence console:** clearly distinguishes a real fail-closed CALL-E provider run, a no-call preview, and a deterministic acknowledged simulation.
 2. **Local operator console:** lets an evaluator edit an incident, preview the exact task, inspect evidence, and — only when the server is deliberately armed — authorize one real CALL-E call through the same guarded backend path.
@@ -112,9 +116,9 @@ The local operator console is intentionally preview-first. `uv run incidentbridg
 
 Successful live-call behavior has additionally been validated privately through direct testing, packaged external testing, and testing with randomly selected users. Those call materials are not published because they contain real participant and conversation data.
 
-The repository includes `LIVE-SUCCESS-DEMO.md` for a privacy-safe public success-path validation using a synthetic incident and a consenting authorized recipient.
+The repository includes `LIVE-SUCCESS-DEMO.md` plus the one-shot `incidentbridge-consented-live-demo` command for a privacy-safe public success-path validation using a synthetic incident and a consenting authorized recipient.
 
-The judge-focused demo V2 source is designed to stay under three minutes and explicitly shows the phone-work problem, authority boundary, real fail-closed provider evidence, official upstream merge, CI proof, and transparent impact model. The build is reproducible with `bash scripts/build-demo-v2.sh`.
+The judge-focused demo V2 source is designed to stay under three minutes and explicitly shows the phone-work problem, authority boundary, real fail-closed provider evidence, local operator console, official upstream merge, final CI proof, and transparent impact model. The build is reproducible with `bash scripts/build-demo-v2.sh`.
 
 ## What `vendor_acknowledged` actually means
 
