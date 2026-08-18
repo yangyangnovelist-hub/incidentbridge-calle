@@ -14,3 +14,4 @@ artifacts/*
 !artifacts/example-preview.json
 !artifacts/example-simulation.json
 !artifacts/calle-live-no-answer.json
+!artifacts/consented-live-success.json
