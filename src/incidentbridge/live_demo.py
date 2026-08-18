@@ -98,7 +98,11 @@ def write_replace(path: Path, payload: dict[str, Any]) -> None:
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--phone", required=True, help="Owned or explicitly authorized E.164 number")
+    parser.add_argument(
+        "--phone",
+        required=True,
+        help="Owned or explicitly authorized E.164 number",
+    )
     parser.add_argument(
         "--confirm-consent",
         required=True,
