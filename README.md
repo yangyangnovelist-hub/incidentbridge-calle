@@ -6,7 +6,8 @@
 evidence without pretending the service recovered.**
 
 [Open the live evidence console](https://yangyangnovelist-hub.github.io/incidentbridge-calle/) ·
-[Review the official CALL-E contribution](https://github.com/CALLE-AI/awesome-phone-call-agents/pull/132)
+[Review the official CALL-E contribution](https://github.com/CALLE-AI/awesome-phone-call-agents/pull/132) ·
+[Read the judge guide](JUDGING.md)
 
 ## Official CALL-E acceptance
 
@@ -20,6 +21,22 @@ the spoken task needed secret/privacy validation, and a successful terminal resu
 bound to the approved workflow, incident, call and destination and corroborated by recipient
 transcript evidence. Both requirements are implemented in the current code and locked in by
 regression tests in `tests/test_policy.py`.
+
+## Validation status
+
+The public repository contains a redacted real-provider boundary run plus deterministic simulation
+and SDK-integration tests. In addition, successful live-call behavior has been validated privately
+through direct testing, packaged external testing, and testing with randomly selected users. Those
+private call materials are intentionally not published because they contain real participant and
+conversation data.
+
+Current reproducible checks:
+
+- 19 automated tests pass with 92.29% coverage.
+- The published `calle-ai==0.2.0` SDK is exercised at runtime through the integration suite.
+- A real CALL-E provider call ID is preserved in the redacted public fail-closed artifact.
+- The implementation has completed upstream maintainer review and is merged into CALL-E's official
+  phone-agent repository.
 
 When a critical SaaS or data dependency fails, operators often lose time waiting on a support line,
 repeating context, and manually copying a ticket number and ETA into an incident channel.
@@ -121,12 +138,22 @@ asserts the observed `POST /v1/calls`, bearer authentication, idempotency header
 `GET /v1/calls/{id}` poll. It proves CALL-E is imported and called at runtime without placing a real
 phone call during tests.
 
-## Verified live boundary
+## Verified public live boundary
 
 An authorized live CALL-E run reached an unavailable voicemail, returned `task_completed: false`
 with 0.85 confidence, and produced a real provider call ID. IncidentBridge treats that result as
 `needs_human`, keeps `incident_closed: "false"`, and does not auto-retry. The redacted evidence is in
 [`artifacts/calle-live-no-answer.json`](artifacts/calle-live-no-answer.json).
+
+## Rebuild the demo narration
+
+The demo narration can be regenerated locally with the Apache-2.0-licensed Kokoro-82M
+`bm_george` voice. It does not clone a real person. Each cue is pitch-preservingly fitted to its
+reviewed subtitle slot:
+
+```bash
+HF_HUB_DISABLE_XET=1 uv run --script scripts/synthesize-demo-narration.py
+```
 
 ## Scope
 
