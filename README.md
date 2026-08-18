@@ -8,6 +8,19 @@ evidence without pretending the service recovered.**
 [Open the live evidence console](https://yangyangnovelist-hub.github.io/incidentbridge-calle/) ·
 [Review the official CALL-E contribution](https://github.com/CALLE-AI/awesome-phone-call-agents/pull/132)
 
+## Official CALL-E acceptance
+
+IncidentBridge was reviewed by CALL-E maintainers and merged into the official
+[`CALLE-AI/awesome-phone-call-agents`](https://github.com/CALLE-AI/awesome-phone-call-agents)
+repository through [PR #132](https://github.com/CALLE-AI/awesome-phone-call-agents/pull/132) on
+August 17, 2026.
+
+The upstream review identified two security blockers before merge: every free-text field entering
+the spoken task needed secret/privacy validation, and a successful terminal result needed to be
+bound to the approved workflow, incident, call and destination and corroborated by recipient
+transcript evidence. Both requirements are implemented in the current code and locked in by
+regression tests in `tests/test_policy.py`.
+
 When a critical SaaS or data dependency fails, operators often lose time waiting on a support line,
 repeating context, and manually copying a ticket number and ETA into an incident channel.
 IncidentBridge places one explicitly authorized phone call, discloses that it is AI, gathers a strict
