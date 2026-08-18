@@ -55,15 +55,15 @@ CALL-E maintainers then reviewed IncidentBridge in the official awesome-phone-ca
 They found two substantive safety blockers: incomplete privacy validation and insufficient result binding and transcript corroboration. Both were fixed, regression-tested, and PR number one thirty-two was merged.
 
 15
-00:01:50,000 --> 00:01:56,500
-Current GitHub Actions verification is twenty-seven passing tests at ninety-three point one four percent total coverage, with a ninety percent gate.
+00:01:50,000 --> 00:01:57,000
+Final GitHub Actions verification is thirty-three passing tests at ninety-three point eight zero percent total coverage, with a ninety percent enforced gate.
 
 16
-00:01:56,620 --> 00:02:05,500
-The operator console itself is ninety-five percent covered, and the integration suite runs the published CALL-E Python SDK through the real create-call and polling boundary.
+00:01:57,120 --> 00:02:06,000
+The consented live-proof runner is ninety-nine percent covered, the operator console is ninety-five percent covered, and the published CALL-E Python SDK is exercised through the real create-call and polling boundary.
 
 17
-00:02:06,000 --> 00:02:13,500
+00:02:06,120 --> 00:02:13,500
 For real-world impact, IncidentBridge avoids inventing an MTTR or revenue number.
 
 18
