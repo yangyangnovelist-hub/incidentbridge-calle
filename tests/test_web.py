@@ -37,30 +37,30 @@ def running_server(config: WebConfig):
 
 
 def get_json(base: str, path: str):
-    with urlopen(f"{base}{path}", timeout=3) as response:  # noqa: S310
+    with urlopen(f"{base}{path}", timeout=3) as response:
         return response.status, json.load(response)
 
 
 def post_json(base: str, path: str, payload: dict):
-    request = Request(  # noqa: S310
+    request = Request(
         f"{base}{path}",
         data=json.dumps(payload).encode(),
         headers={"Content-Type": "application/json"},
         method="POST",
     )
-    with urlopen(request, timeout=3) as response:  # noqa: S310
+    with urlopen(request, timeout=3) as response:
         return response.status, json.load(response)
 
 
 def error_json(base: str, path: str, payload: dict):
-    request = Request(  # noqa: S310
+    request = Request(
         f"{base}{path}",
         data=json.dumps(payload).encode(),
         headers={"Content-Type": "application/json"},
         method="POST",
     )
     with pytest.raises(HTTPError) as captured:
-        urlopen(request, timeout=3)  # noqa: S310
+        urlopen(request, timeout=3)
     return captured.value.code, json.load(captured.value)
 
 
@@ -112,7 +112,11 @@ def test_web_live_requires_server_and_human_gates(tmp_path: Path):
         status, body = error_json(
             base,
             "/api/execute",
-            {"request": RAW, "confirm_authorized_recipient": False, "confirm_phrase": ""},
+            {
+                "request": RAW,
+                "confirm_authorized_recipient": False,
+                "confirm_phrase": "",
+            },
         )
         assert status == 400
         assert "authorization" in body["error"]
@@ -178,6 +182,12 @@ def test_live_ui_must_bind_loopback_and_have_allowlist(tmp_path: Path):
         "enable_live_ui": True,
     }
     with pytest.raises(ValueError, match="loopback"):
-        build_server(argparse.Namespace(host="0.0.0.0", allow=[RAW["support_phone"]], **base))
+        args = argparse.Namespace(
+            host="0.0.0.0",
+            allow=[RAW["support_phone"]],
+            **base,
+        )
+        build_server(args)
     with pytest.raises(ValueError, match="at least one exact"):
-        build_server(argparse.Namespace(host="127.0.0.1", allow=[], **base))
+        args = argparse.Namespace(host="127.0.0.1", allow=[], **base)
+        build_server(args)
