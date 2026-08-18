@@ -11,7 +11,7 @@ If you only have ninety seconds:
 3. Open the impact calculator: https://yangyangnovelist-hub.github.io/incidentbridge-calle/impact-calculator.html and change the assumptions.
 4. Run `uv run incidentbridge-web`, open `http://127.0.0.1:8766/`, and click **Preview — no call**. Live calling is disabled by default.
 5. Verify official upstream acceptance: https://github.com/CALLE-AI/awesome-phone-call-agents/pull/132
-6. Inspect `tests/test_sdk_runtime.py`, `tests/test_policy.py`, and `tests/test_web.py` for the runtime, policy, and operator-surface boundaries.
+6. Inspect `tests/test_sdk_runtime.py`, `tests/test_policy.py`, `tests/test_web.py`, and `tests/test_live_demo.py` for the runtime, policy, operator-surface, and public-live-proof boundaries.
 
 ## 1. Inspect the public evidence surface
 
@@ -86,20 +86,24 @@ uv run ruff check .
 uv run pytest --cov=src/incidentbridge --cov-report=term-missing --cov-fail-under=90
 ```
 
-Current verified GitHub Actions result:
+Final award-sprint GitHub Actions result:
 
 ```text
-27 passed
-93.14% total coverage
+33 passed
+93.80% total coverage
+99% coverage for src/incidentbridge/live_demo.py
 95% coverage for src/incidentbridge/web.py
 Ruff: all checks passed
+Demo JS/Bash source syntax: passed
 ```
 
-The enforced repository gate remains 90%. The GitHub Actions workflow runs the same lint and test commands on pushes to `main` and on pull requests.
+The enforced repository gate remains 90%. The GitHub Actions workflow runs lint, the full regression suite, coverage, and demo-source syntax checks on pushes to `main` and on pull requests.
 
 The SDK integration test uses the published `calle-ai==0.2.0` package against a loopback HTTP capture server. It verifies that the real SDK performs the create-call request and result poll, including bearer auth, idempotency and the strict result schema, without creating an external phone call during the test suite.
 
-The operator-console tests additionally verify disabled-by-default live behavior, server-side exact-number allowlisting, human confirmation, duplicate-call reconciliation, loopback-only live binding, and browser/server startup behavior.
+The operator-console tests verify disabled-by-default live behavior, server-side exact-number allowlisting, human confirmation, duplicate-call reconciliation, loopback-only live binding, and browser/server startup behavior.
+
+The consented-live-runner tests verify that the synthetic public proof path requires exact consent, refuses stale/overwritten public proof, emits no phone/transcript/participant identity, creates a public artifact only on `vendor_acknowledged`, and preserves failed results only in an ignored local data path with an explicit no-blind-retry error.
 
 ## 6. Inspect the upstream-review and adversarial security fixes
 
@@ -124,9 +128,11 @@ CALL-E maintainers reviewed the contribution and merged it into the official rep
 
 A follow-up hardening branch for ticket corroboration is maintained in the contributor fork so the official app can receive the same adversarial fix.
 
-## 8. Inspect the impact methodology
+## 8. Inspect the impact methodology and prior-art boundary
 
 Read `IMPACT.md` for the transparent model. It intentionally measures operator attention returned to incident work rather than claiming an unmeasured universal MTTR reduction.
+
+Read `PRIOR-ART.md` for direct official CALL-E references showing why IncidentBridge is distinct from internal incident paging and phone-line synthetic monitoring.
 
 The recommended production-pilot metrics include:
 
@@ -138,10 +144,23 @@ The recommended production-pilot metrics include:
 - unauthorized-call rate; and
 - false-success rate.
 
-## Optional live execution
+## Optional public live success validation
 
-A live call should only be made to a business number the tester owns or is explicitly authorized to call. Live mode additionally requires exact-number allowlisting, explicit recipient authorization, `CALLE_LIVE_CALLS_ENABLED=true`, and a valid CALL-E API key.
+A live call should only be made to a phone number the tester owns or a consenting adult has explicitly authorized for this synthetic test.
 
-For a public success-path validation without exposing private participant data, use the synthetic, consented protocol in `LIVE-SUCCESS-DEMO.md`.
+The one-shot runner fixes the incident to synthetic data and uses the same guarded runtime:
+
+```bash
+export CALLE_API_KEY="<CALL_E_API_KEY>"
+export CALLE_LIVE_CALLS_ENABLED="true"
+
+uv run incidentbridge-consented-live-demo \
+  --phone +<AUTHORIZED_E164_NUMBER> \
+  --confirm-consent "I HAVE EXPLICIT CONSENT"
+```
+
+On a true success path, it creates `artifacts/consented-live-success.json`. On a failed or ambiguous path, it creates no public success artifact, stores the result under ignored `data/`, and tells the operator not to blindly retry.
+
+See `LIVE-SUCCESS-DEMO.md` for the exact recipient script, fixed synthetic scenario, and public claim boundary.
 
 The repository does not include real phone numbers, credentials, recordings or private participant transcripts.
