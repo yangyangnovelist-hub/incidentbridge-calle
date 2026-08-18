@@ -1,91 +1,71 @@
 1
-00:00:00,000 --> 00:00:03,014
-Incident response often stalls outside the system.
+00:00:00,000 --> 00:00:04,000
+During an outage, incident response often stalls outside the system.
 
 2
-00:00:03,134 --> 00:00:12,178
-An operator opens a vendor ticket, waits on hold, repeats context, and then copies unstructured notes back into the incident channel.
+00:00:04,120 --> 00:00:12,500
+An operator stops diagnosing, waits on vendor support, repeats context, and manually carries the ticket, status, and ETA back into the incident workflow.
 
 3
-00:00:12,298 --> 00:00:16,604
-IncidentBridge turns that delay into one controlled, authorized phone workflow.
+00:00:12,620 --> 00:00:18,000
+IncidentBridge delegates exactly that bounded phone job to CALL-E.
 
 4
-00:00:16,724 --> 00:00:21,461
-The key design choice is simple: calls become evidence, never authority.
+00:00:18,120 --> 00:00:24,000
+The core rule is simple: a phone call may create evidence, but it never gets recovery authority.
 
 5
-00:00:21,581 --> 00:00:27,179
-IncidentBridge can gather operational facts, but it can never declare the service recovered.
+00:00:24,120 --> 00:00:30,700
+The workflow validates the briefing, previews the exact task, authorizes one destination, reserves before dispatch, then binds and corroborates the result.
 
 6
-00:00:27,299 --> 00:00:35,912
-Before any call, the request is validated for bounded incident identifiers, UTC timestamps, an authorized business recipient, and secret-like content.
+00:00:31,000 --> 00:00:35,500
+The public console clearly labels what is real, what is previewed, and what is simulated.
 
 7
-00:00:36,032 --> 00:00:37,754
-Preview is the default.
+00:00:35,620 --> 00:00:44,600
+This is a real CALL-E provider run. The recipient was unavailable, so IncidentBridge failed closed to needs human, kept incident closed false, and made no automatic retry.
 
 8
-00:00:37,874 --> 00:00:46,917
-It masks the recipient and shows the exact CALL-E task, result schema, idempotency key, and decision boundary without creating a call.
+00:00:45,000 --> 00:00:50,500
+The preview path creates no call and exposes the exact task, schema, destination mask, and decision boundary.
 
 9
-00:00:47,037 --> 00:00:57,803
-Live execution requires four independent gates: explicit execute intent, confirmation that the recipient is authorized, an exact E.164 allowlist match, and a server-side API credential.
+00:00:50,620 --> 00:00:56,800
+Live execution still requires explicit intent, recipient authorization, an exact E.164 allowlist match, and the server-side credential.
 
 10
-00:00:57,923 --> 00:01:01,368
-Before dispatch, IncidentBridge writes a durable SQLite reservation.
+00:00:57,000 --> 00:01:03,500
+The acknowledged path captures a support ticket, vendor status, ETA, workaround, and callback information.
 
 11
-00:01:01,488 --> 00:01:08,809
-If the provider result is ambiguous, the reservation is locked for reconciliation instead of automatically dialing again.
+00:01:03,620 --> 00:01:08,800
+Even on that success path, incident closed remains false until local checks and the incident commander verify recovery.
 
 12
-00:01:08,929 --> 00:01:11,943
-This evidence console exposes all three paths.
+00:01:12,000 --> 00:01:18,000
+CALL-E maintainers then reviewed IncidentBridge in the official awesome-phone-call-agents repository.
 
 13
-00:01:12,063 --> 00:01:15,508
-The first is a real CALL-E provider run.
+00:01:18,120 --> 00:01:27,800
+They found two substantive safety blockers: incomplete privacy validation and insufficient result binding and transcript corroboration. Both were fixed, regression-tested, and PR number one thirty-two was merged.
 
 14
-00:01:15,628 --> 00:01:21,657
-The authorized number was unavailable, so CALL-E returned task completed false after eight seconds.
+00:01:31,000 --> 00:01:37,000
+Current GitHub Actions verification is twenty-one passing tests at ninety-two point three seven percent coverage, with a ninety percent gate.
 
 15
-00:01:21,777 --> 00:01:28,237
-IncidentBridge routed it to needs human, kept incident closed false, and made zero automatic retries.
+00:01:37,120 --> 00:01:46,800
+The integration suite runs the published CALL-E Python SDK through loopback HTTP and verifies the real create-call request, bearer auth, idempotency header, strict result schema, and polling path.
 
 16
-00:01:28,357 --> 00:01:31,371
-The second path is the safe preview.
+00:01:47,000 --> 00:01:53,500
+For real-world impact, IncidentBridge avoids inventing an MTTR or revenue number.
 
 17
-00:01:31,491 --> 00:01:34,506
-No call exists, and recovery remains human-owned.
+00:01:53,620 --> 00:02:00,500
+The calculator lets a team enter its own vendor-call volume, manual operator minutes, review burden, and delegation share.
 
 18
-00:01:34,626 --> 00:01:47,975
-The third is a deterministic acknowledged simulation: a vendor ticket and status are captured, but even then incident closed remains false until local health checks and the incident commander verify recovery.
-
-19
-00:01:48,095 --> 00:01:53,693
-The implementation uses the published CALL-E Python SDK at runtime, not a placeholder.
-
-20
-00:01:53,813 --> 00:01:58,120
-Twenty-one tests pass with ninety-two point three seven percent coverage in GitHub Actions.
-
-21
-00:01:58,240 --> 00:02:09,436
-The integration suite sends the real SDK through a loopback HTTP server and verifies the create-call request, bearer authentication, idempotency header, strict schema, and status polling.
-
-22
-00:02:09,556 --> 00:02:15,154
-IncidentBridge is open source, MIT licensed, and contributed to CALL-E's official phone-agent repository.
-
-23
-00:02:15,274 --> 00:02:25,609
-It gives operators a reusable pattern for real-world phone automation with consent, exact authorization, duplicate prevention, structured evidence, and a hard human decision boundary.
+00:02:00,620 --> 00:02:09,000
+That yields one auditable business metric: operator hours returned to incident work. The paired safety metrics remain unauthorized calls and false successes, both targeted at zero.
