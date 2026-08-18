@@ -5,6 +5,7 @@ IncidentBridge is a consent-first CALL-E agent for one bounded real-world task: 
 **Fast path for judges**
 
 - Live evidence console: https://yangyangnovelist-hub.github.io/incidentbridge-calle/
+- Transparent impact calculator: https://yangyangnovelist-hub.github.io/incidentbridge-calle/impact-calculator.html
 - Official CALL-E contribution: https://github.com/CALLE-AI/awesome-phone-call-agents/pull/132 — **merged**
 - Official merged app: https://github.com/CALLE-AI/awesome-phone-call-agents/tree/main/apps/python/incidentbridge
 - Safe reproduction path: `TESTING.md`
@@ -16,6 +17,26 @@ IncidentBridge is a consent-first CALL-E agent for one bounded real-world task: 
 The phone-work problem is specific: during a SaaS or data-platform incident, an operator often has to stop diagnosing the failure, wait on a vendor support line, repeat incident context, then manually carry ticket/status/ETA/workaround facts back into the incident workflow.
 
 IncidentBridge removes that bounded phone task without replacing the part that should remain human-owned. CALL-E can collect vendor evidence; local health checks and the human incident commander retain recovery authority.
+
+The impact claim is intentionally narrow and testable: **operator attention can be returned to diagnosis and coordination when a bounded vendor-support interaction is delegated safely.** IncidentBridge does not claim a universal MTTR reduction or invent customer ROI statistics.
+
+The public impact model uses a team's own assumptions:
+
+```text
+operator_minutes_reclaimed
+  = manual_operator_minutes - approval_and_review_minutes
+
+annual_operator_hours_reclaimed
+  = vendor_calls_per_week
+  × operator_minutes_reclaimed
+  × delegation_share
+  × 52
+  ÷ 60
+```
+
+Open the calculator: https://yangyangnovelist-hub.github.io/incidentbridge-calle/impact-calculator.html
+
+The methodology and recommended production-pilot metrics are documented in `IMPACT.md`. The first business KPI is operator minutes reclaimed per delegated call. The first safety KPIs are unauthorized-call rate and false-success rate.
 
 This is useful beyond the demo because the same pattern applies anywhere an operations team must contact an external provider during an incident while preserving an auditable separation between **what the vendor said** and **whether the system is actually recovered**.
 
@@ -53,6 +74,8 @@ IncidentBridge treats phone automation as a safety-critical state machine:
 
 The contribution is reusable: the official CALL-E repository accepted IncidentBridge as a community app after maintainer review, so the safety pattern is available to other builders rather than existing only as a competition-specific demo.
 
+A separate `LIVE-SUCCESS-DEMO.md` protocol shows how to validate the full success path with a real CALL-E call, a synthetic incident, and a consenting authorized recipient without pretending that the tester is a real vendor.
+
 ## 3. Technical Implementation
 
 - Published `calle-ai==0.2.0` SDK is imported and exercised at runtime.
@@ -81,6 +104,8 @@ The public judge console intentionally distinguishes three states instead of pre
 - **Public live-provider boundary:** a real CALL-E call reaches an unavailable voicemail and correctly fails closed without automatic retry.
 - **Authorization preview:** shows the exact task, masked destination and decision boundary while creating no phone call.
 - **Deterministic acknowledged simulation:** makes the complete success route inspectable without misrepresenting simulated data as a live call.
+
+The repository also exposes a separate browser-native impact calculator so a judge can test the real-world value proposition using their own assumptions rather than accepting a fabricated ROI number.
 
 Successful live-call behavior has additionally been validated privately through direct testing, packaged external testing, and testing with randomly selected users. Those call materials are not published because they contain real participant and conversation data.
 
