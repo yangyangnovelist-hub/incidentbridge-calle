@@ -28,44 +28,48 @@ This is a real CALL-E provider run. The recipient was unavailable, so IncidentBr
 
 8
 00:00:45,000 --> 00:00:50,500
-The preview path creates no call and exposes the exact task, schema, destination mask, and decision boundary.
+The no-call preview exposes the exact task, masked destination, result schema, and decision boundary before any side effect.
 
 9
-00:00:50,620 --> 00:00:56,800
-Live execution still requires explicit intent, recipient authorization, an exact E.164 allowlist match, and the server-side credential.
+00:00:50,620 --> 00:00:56,500
+The deterministic result paths make failure handling inspectable without misrepresenting simulated data as a live phone call.
 
 10
-00:00:57,000 --> 00:01:03,500
-The acknowledged path captures a support ticket, vendor status, ETA, workaround, and callback information.
+00:00:57,000 --> 00:01:08,000
+On the acknowledged path, the agent returns a corroborated ticket, vendor status, ETA, workaround, and callback window, while incident closed still remains false.
 
 11
-00:01:03,620 --> 00:01:08,800
-Even on that success path, incident closed remains false until local checks and the incident commander verify recovery.
+00:01:09,000 --> 00:01:14,500
+IncidentBridge now also ships a real local operator surface, not only a CLI and evidence page.
 
 12
-00:01:12,000 --> 00:01:18,000
-CALL-E maintainers then reviewed IncidentBridge in the official awesome-phone-call-agents repository.
+00:01:14,620 --> 00:01:27,500
+Here the evaluator edits the incident and clicks Preview. Live calling is disabled server-side by default; enabling it requires an exact allowlist, separate environment gates, recipient confirmation, and the typed phrase CALL AUTHORIZED.
 
 13
-00:01:18,120 --> 00:01:27,800
-They found two substantive safety blockers: incomplete privacy validation and insufficient result binding and transcript corroboration. Both were fixed, regression-tested, and PR number one thirty-two was merged.
+00:01:31,000 --> 00:01:37,000
+CALL-E maintainers then reviewed IncidentBridge in the official awesome-phone-call-agents repository.
 
 14
-00:01:31,000 --> 00:01:37,000
-Current GitHub Actions verification is twenty-one passing tests at ninety-two point three seven percent coverage, with a ninety percent gate.
+00:01:37,120 --> 00:01:46,800
+They found two substantive safety blockers: incomplete privacy validation and insufficient result binding and transcript corroboration. Both were fixed, regression-tested, and PR number one thirty-two was merged.
 
 15
-00:01:37,120 --> 00:01:46,800
-The integration suite runs the published CALL-E Python SDK through loopback HTTP and verifies the real create-call request, bearer auth, idempotency header, strict result schema, and polling path.
+00:01:50,000 --> 00:01:56,500
+Current GitHub Actions verification is twenty-seven passing tests at ninety-three point one four percent total coverage, with a ninety percent gate.
 
 16
-00:01:47,000 --> 00:01:53,500
-For real-world impact, IncidentBridge avoids inventing an MTTR or revenue number.
+00:01:56,620 --> 00:02:05,500
+The operator console itself is ninety-five percent covered, and the integration suite runs the published CALL-E Python SDK through the real create-call and polling boundary.
 
 17
-00:01:53,620 --> 00:02:00,500
-The calculator lets a team enter its own vendor-call volume, manual operator minutes, review burden, and delegation share.
+00:02:06,000 --> 00:02:13,500
+For real-world impact, IncidentBridge avoids inventing an MTTR or revenue number.
 
 18
-00:02:00,620 --> 00:02:09,000
-That yields one auditable business metric: operator hours returned to incident work. The paired safety metrics remain unauthorized calls and false successes, both targeted at zero.
+00:02:13,620 --> 00:02:20,500
+The calculator lets a team enter its own vendor-call volume, manual operator minutes, review burden, and delegation share.
+
+19
+00:02:20,620 --> 00:02:28,000
+That yields one auditable business metric: operator hours returned to incident work, paired with safety targets of zero unauthorized calls and zero false successes.
