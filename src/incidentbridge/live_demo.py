@@ -19,7 +19,11 @@ DEFAULT_FAILURE_OUTPUT = Path("data/consented-live-last-result.json")
 DEFAULT_PUBLIC_OUTPUT = Path("artifacts/consented-live-success.json")
 
 
-def synthetic_request(phone: str) -> dict[str, Any]:
+def synthetic_request(
+    phone: str,
+    region: str = "US",
+    locale: str = "en-US",
+) -> dict[str, Any]:
     """Return the fixed non-production scenario used for public live validation."""
     return {
         "workflow_id": "wf-consented-live-demo-001",
@@ -34,8 +38,8 @@ def synthetic_request(phone: str) -> dict[str, Any]:
         ),
         "severity": "outage",
         "observed_at_utc": "2026-08-10T01:20:00Z",
-        "region": "US",
-        "locale": "en-US",
+        "region": region,
+        "locale": locale,
     }
 
 
@@ -104,6 +108,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Owned or explicitly authorized E.164 number",
     )
     parser.add_argument(
+        "--region",
+        default="US",
+        help="CALL-E two-letter recipient region code, e.g. US or GB",
+    )
+    parser.add_argument(
+        "--locale",
+        default="en-US",
+        help="Recipient locale, e.g. en-US or en-GB",
+    )
+    parser.add_argument(
         "--confirm-consent",
         required=True,
         help=f"Must equal: {CONSENT_PHRASE}",
@@ -129,7 +143,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             f"refusing to overwrite existing public proof: {args.public_output}"
         )
 
-    request = parse_request(synthetic_request(args.phone))
+    request = parse_request(synthetic_request(args.phone, args.region, args.locale))
     execute_args = argparse.Namespace(
         confirm_authorized_recipient=True,
         allow=[args.phone],
