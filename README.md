@@ -9,6 +9,7 @@ evidence without pretending the service recovered.**
 
 [Open the live evidence console](https://yangyangnovelist-hub.github.io/incidentbridge-calle/) ·
 [Model operator-time impact](https://yangyangnovelist-hub.github.io/incidentbridge-calle/impact-calculator.html) ·
+[Run the local operator console](OPERATOR-CONSOLE.md) ·
 [Review the official CALL-E contribution](https://github.com/CALLE-AI/awesome-phone-call-agents/pull/132) ·
 [Read the judge guide](JUDGING.md)
 
@@ -17,7 +18,8 @@ evidence without pretending the service recovered.**
 1. Open the [evidence console](https://yangyangnovelist-hub.github.io/incidentbridge-calle/) and switch between the real fail-closed provider run, zero-call authorization preview, and deterministic acknowledged path.
 2. Open [PR #132](https://github.com/CALLE-AI/awesome-phone-call-agents/pull/132) to verify that CALL-E maintainers reviewed the implementation, found two substantive safety blockers, and merged the corrected app.
 3. Open the [impact calculator](https://yangyangnovelist-hub.github.io/incidentbridge-calle/impact-calculator.html) and use your own assumptions to estimate operator attention returned by delegating bounded vendor-support phone work.
-4. Run the safe local reproduction in [`TESTING.md`](TESTING.md). No CALL-E key or external phone call is required for the preview, simulations, or SDK boundary test.
+4. Run `uv run incidentbridge-web` and open `http://127.0.0.1:8766/` for the local operator surface. Live execution is disabled by default.
+5. Run the safe local reproduction in [`TESTING.md`](TESTING.md). No CALL-E key or external phone call is required for the preview, simulations, operator console, or SDK boundary test.
 
 ## Official CALL-E acceptance
 
@@ -62,7 +64,8 @@ conversation data.
 
 Current reproducible checks:
 
-- GitHub Actions verifies Ruff plus **21 automated tests at 92.37% coverage**, above the enforced 90% gate.
+- GitHub Actions verifies Ruff plus **27 automated tests at 93.14% coverage**, above the enforced 90% gate.
+- The local operator console itself is 95% covered and reuses the same guarded execution path as the CLI.
 - The published `calle-ai==0.2.0` SDK is exercised at runtime through the integration suite.
 - A real CALL-E provider call ID is preserved in the redacted public fail-closed artifact.
 - The implementation has completed upstream maintainer review and is merged into CALL-E's official
@@ -80,6 +83,24 @@ result, and returns either `vendor_acknowledged` or `needs_human`.
 The phone result can never close the incident. Local health checks and a human incident commander
 retain recovery authority.
 
+## Local operator console
+
+IncidentBridge now ships a browser operator surface around the same policy and execution path:
+
+```bash
+uv sync --extra dev
+uv run incidentbridge-web
+```
+
+Then open `http://127.0.0.1:8766/`.
+
+By default the browser can preview the exact task and inspect deterministic routes but **cannot
+place a phone call**. Live mode must be armed server-side with an explicit exact-number allowlist,
+the separate CALL-E environment gates, a human authorization checkbox, and the typed phrase
+`CALL AUTHORIZED`. The live server is loopback-only and rejects non-loopback Host headers.
+
+See [`OPERATOR-CONSOLE.md`](OPERATOR-CONSOLE.md) for the full safe and live paths.
+
 ## Safety model
 
 ```text
@@ -92,6 +113,7 @@ incident → validated, non-secret briefing → masked preview → exact phone a
 - Live mode requires an authorized business contact in the request, the exact E.164 phone number in
   `--allow`, `--confirm-authorized-recipient`, `CALLE_LIVE_CALLS_ENABLED=true`, and a server-side
   `CALLE_API_KEY`.
+- The browser operator surface adds its own loopback-only, typed-confirmation, and server-side live-UI gates without bypassing the CLI execution policy.
 - A SQLite reservation is written before provider dispatch. Any repeat or ambiguous outcome is
   locked for reconciliation instead of redialed.
 - The task requests no credentials, authentication codes, personal data, payment data, or contract
@@ -172,6 +194,9 @@ asserts the observed `POST /v1/calls`, bearer authentication, idempotency header
 `GET /v1/calls/{id}` poll. It proves CALL-E is imported and called at runtime without placing a real
 phone call during tests.
 
+The current CI run reports **27 passed, 93.14% total coverage**, with the operator console module at
+95% coverage.
+
 ## Verified public live boundary
 
 An authorized live CALL-E run reached an unavailable voicemail, returned `task_completed: false`
@@ -179,15 +204,17 @@ with 0.85 confidence, and produced a real provider call ID. IncidentBridge treat
 `needs_human`, keeps `incident_closed: "false"`, and does not auto-retry. The redacted evidence is in
 [`artifacts/calle-live-no-answer.json`](artifacts/calle-live-no-answer.json).
 
-## Rebuild the demo narration
+## Rebuild the demo video
 
-The demo narration can be regenerated locally with the Apache-2.0-licensed Kokoro-82M
-`bm_george` voice. It does not clone a real person. Each cue is pitch-preservingly fitted to its
-reviewed subtitle slot:
+The judge-focused V2 demo source is designed to stay under three minutes and now includes the
+upstream merge, current CI proof, and transparent impact calculator. Build it with:
 
 ```bash
-HF_HUB_DISABLE_XET=1 uv run --script scripts/synthesize-demo-narration.py
+bash scripts/build-demo-v2.sh
 ```
+
+The narration uses the Apache-2.0-licensed Kokoro-82M `bm_george` voice and does not clone a real
+person. See [`video/DEMO-V2.md`](video/DEMO-V2.md) for the review and upload checklist.
 
 ## Scope
 
