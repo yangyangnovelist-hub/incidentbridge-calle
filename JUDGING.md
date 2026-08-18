@@ -6,10 +6,12 @@ IncidentBridge is a consent-first CALL-E agent for one bounded real-world task: 
 
 - Live evidence console: https://yangyangnovelist-hub.github.io/incidentbridge-calle/
 - Transparent impact calculator: https://yangyangnovelist-hub.github.io/incidentbridge-calle/impact-calculator.html
+- Local operator console: `uv run incidentbridge-web` → `http://127.0.0.1:8766/`
 - Official CALL-E contribution: https://github.com/CALLE-AI/awesome-phone-call-agents/pull/132 — **merged**
 - Official merged app: https://github.com/CALLE-AI/awesome-phone-call-agents/tree/main/apps/python/incidentbridge
 - Safe reproduction path: `TESTING.md`
 - Core safety regression tests: `tests/test_policy.py`
+- Operator-console tests: `tests/test_web.py`
 - Runtime integration: `tests/test_sdk_runtime.py`
 
 ## 1. Real World Impact
@@ -85,7 +87,8 @@ A separate `LIVE-SUCCESS-DEMO.md` protocol shows how to validate the full succes
 - Every free-text field entering the spoken task is screened for credentials, secrets and personal contact data.
 - Unbound, incomplete, low-confidence or uncorroborated results fail closed to `needs_human`.
 - Ticket corroboration rejects blank/`unknown` IDs and prefix/sub-string false matches while tolerating punctuation differences such as `SUP-4821` vs `SUP 4821`.
-- **GitHub Actions verified Ruff plus 21 passing tests at 92.37% coverage**, above the enforced 90% gate.
+- The local browser operator surface uses server-side live permissions, exact-number allowlisting, typed confirmation, loopback-only live binding, and non-loopback Host rejection while reusing the same execution path as the CLI.
+- **GitHub Actions verified Ruff plus 27 passing tests at 93.14% total coverage**, above the enforced 90% gate. The operator-console module is 95% covered.
 - Integration tests exercise the actual SDK request/poll boundary through loopback HTTP rather than replacing the SDK with an internal mock.
 
 ### Independent upstream review
@@ -99,17 +102,19 @@ Both were fixed and regression-tested. The contribution was merged into the offi
 
 ## 4. Product Experience & Demo
 
-The public judge console intentionally distinguishes three states instead of presenting every path as “live”:
+IncidentBridge now has three complementary product surfaces:
 
-- **Public live-provider boundary:** a real CALL-E call reaches an unavailable voicemail and correctly fails closed without automatic retry.
-- **Authorization preview:** shows the exact task, masked destination and decision boundary while creating no phone call.
-- **Deterministic acknowledged simulation:** makes the complete success route inspectable without misrepresenting simulated data as a live call.
+1. **Public evidence console:** clearly distinguishes a real fail-closed CALL-E provider run, a no-call preview, and a deterministic acknowledged simulation.
+2. **Local operator console:** lets an evaluator edit an incident, preview the exact task, inspect evidence, and — only when the server is deliberately armed — authorize one real CALL-E call through the same guarded backend path.
+3. **Impact calculator:** lets a team test the value proposition using its own vendor-call volume and operator-time assumptions rather than accepting fabricated ROI.
 
-The repository also exposes a separate browser-native impact calculator so a judge can test the real-world value proposition using their own assumptions rather than accepting a fabricated ROI number.
+The local operator console is intentionally preview-first. `uv run incidentbridge-web` starts it with live calling disabled. Enabling a call requires server-side exact-number allowlisting plus independent environment and human-confirmation gates; the CALL-E credential never enters browser JavaScript.
 
 Successful live-call behavior has additionally been validated privately through direct testing, packaged external testing, and testing with randomly selected users. Those call materials are not published because they contain real participant and conversation data.
 
-The demo narration is reproducible locally using an Apache-2.0 Kokoro-82M voice; no real person is cloned.
+The repository includes `LIVE-SUCCESS-DEMO.md` for a privacy-safe public success-path validation using a synthetic incident and a consenting authorized recipient.
+
+The judge-focused demo V2 source is designed to stay under three minutes and explicitly shows the phone-work problem, authority boundary, real fail-closed provider evidence, official upstream merge, CI proof, and transparent impact model. The build is reproducible with `bash scripts/build-demo-v2.sh`.
 
 ## What `vendor_acknowledged` actually means
 
