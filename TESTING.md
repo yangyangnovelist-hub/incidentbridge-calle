@@ -1,6 +1,6 @@
 # IncidentBridge — Fast Judge Testing
 
-This path is intentionally safe: the first four checks do **not** place a phone call and do not require a CALL-E API key.
+This path is intentionally safe: the default checks do **not** place a phone call and do not require a CALL-E API key.
 
 ## 0. Ninety-second judge path
 
@@ -9,10 +9,11 @@ If you only have ninety seconds:
 1. Open the evidence console: https://yangyangnovelist-hub.github.io/incidentbridge-calle/
 2. Click all three scenarios and verify the route changes while `incident_closed` never becomes true.
 3. Open the impact calculator: https://yangyangnovelist-hub.github.io/incidentbridge-calle/impact-calculator.html and change the assumptions.
-4. Verify official upstream acceptance: https://github.com/CALLE-AI/awesome-phone-call-agents/pull/132
-5. Inspect `tests/test_sdk_runtime.py` and `tests/test_policy.py` for the real SDK boundary and fail-closed invariants.
+4. Run `uv run incidentbridge-web`, open `http://127.0.0.1:8766/`, and click **Preview — no call**. Live calling is disabled by default.
+5. Verify official upstream acceptance: https://github.com/CALLE-AI/awesome-phone-call-agents/pull/132
+6. Inspect `tests/test_sdk_runtime.py`, `tests/test_policy.py`, and `tests/test_web.py` for the runtime, policy, and operator-surface boundaries.
 
-## 1. Inspect the live product surface
+## 1. Inspect the public evidence surface
 
 Open:
 
@@ -37,7 +38,25 @@ uv venv --python 3.12 .venv
 uv sync --extra dev
 ```
 
-## 3. Run the no-call product paths
+## 3. Run the local operator console — live disabled by default
+
+```bash
+uv run incidentbridge-web
+```
+
+Open:
+
+```text
+http://127.0.0.1:8766/
+```
+
+The default server supports preview and deterministic simulation but has no live-call permission. The browser can edit the synthetic incident, preview the exact CALL-E task, and inspect the returned evidence boundary.
+
+Live execution is not merely hidden in the UI; it is disabled server-side unless the process is deliberately restarted with `--enable-live-ui` and an exact server-side `--allow` number. Additional environment and human-confirmation gates still apply.
+
+See `OPERATOR-CONSOLE.md` for the complete safe/live model.
+
+## 4. Run the CLI no-call product paths
 
 Preview the exact task, destination mask, result schema and decision boundary:
 
@@ -60,18 +79,29 @@ Exercise two fail-closed paths:
 
 Expected invariant: the phone workflow never sets `incident_closed` to true.
 
-## 4. Run the technical proof
+## 5. Run the technical proof
 
 ```bash
 uv run ruff check .
 uv run pytest --cov=src/incidentbridge --cov-report=term-missing --cov-fail-under=90
 ```
 
-Expected result: the full regression suite passes and the enforced coverage gate remains above 90%. The repository's GitHub Actions workflow runs these same lint and test commands on pushes to `main` and on pull requests.
+Current verified GitHub Actions result:
+
+```text
+27 passed
+93.14% total coverage
+95% coverage for src/incidentbridge/web.py
+Ruff: all checks passed
+```
+
+The enforced repository gate remains 90%. The GitHub Actions workflow runs the same lint and test commands on pushes to `main` and on pull requests.
 
 The SDK integration test uses the published `calle-ai==0.2.0` package against a loopback HTTP capture server. It verifies that the real SDK performs the create-call request and result poll, including bearer auth, idempotency and the strict result schema, without creating an external phone call during the test suite.
 
-## 5. Inspect the upstream-review and adversarial security fixes
+The operator-console tests additionally verify disabled-by-default live behavior, server-side exact-number allowlisting, human confirmation, duplicate-call reconciliation, loopback-only live binding, and browser/server startup behavior.
+
+## 6. Inspect the upstream-review and adversarial security fixes
 
 The highest-value regression cases are in `tests/test_policy.py`:
 
@@ -85,16 +115,16 @@ The highest-value regression cases are in `tests/test_policy.py`:
 - a short ticket cannot be "corroborated" merely because it is a substring/prefix of a longer ticket; and
 - punctuation differences such as `SUP-4821` vs `SUP 4821` are tolerated without weakening token equality.
 
-## 6. Verify independent upstream acceptance
+## 7. Verify independent upstream acceptance
 
 CALL-E maintainers reviewed the contribution and merged it into the official repository:
 
 - PR: https://github.com/CALLE-AI/awesome-phone-call-agents/pull/132
 - Official app: https://github.com/CALLE-AI/awesome-phone-call-agents/tree/main/apps/python/incidentbridge
 
-A follow-up hardening branch for ticket corroboration is also maintained in the contributor fork so the official app can receive the same adversarial fix.
+A follow-up hardening branch for ticket corroboration is maintained in the contributor fork so the official app can receive the same adversarial fix.
 
-## 7. Inspect the impact methodology
+## 8. Inspect the impact methodology
 
 Read `IMPACT.md` for the transparent model. It intentionally measures operator attention returned to incident work rather than claiming an unmeasured universal MTTR reduction.
 
@@ -110,7 +140,7 @@ The recommended production-pilot metrics include:
 
 ## Optional live execution
 
-A live call should only be made to a business number the tester owns or is explicitly authorized to call. Live mode additionally requires an exact-number allowlist, an explicit authorization flag, `CALLE_LIVE_CALLS_ENABLED=true`, and a valid CALL-E API key.
+A live call should only be made to a business number the tester owns or is explicitly authorized to call. Live mode additionally requires exact-number allowlisting, explicit recipient authorization, `CALLE_LIVE_CALLS_ENABLED=true`, and a valid CALL-E API key.
 
 For a public success-path validation without exposing private participant data, use the synthetic, consented protocol in `LIVE-SUCCESS-DEMO.md`.
 
