@@ -73,6 +73,8 @@ class FakeClient:
 def args(tmp_path: Path, *, confirm: str = live_demo.CONSENT_PHRASE):
     return argparse.Namespace(
         phone=PHONE,
+        region="US",
+        locale="en-US",
         confirm_consent=confirm,
         timeout_seconds=5,
         base_url="http://127.0.0.1:8123",
@@ -162,7 +164,7 @@ def test_public_proof_rejects_non_success_invalid_authority_and_shape():
         )
 
 
-def test_parse_args_exposes_fixed_defaults(tmp_path):
+def test_parse_args_exposes_fixed_defaults_and_region_override(tmp_path):
     parsed = live_demo.parse_args(
         [
             "--phone",
@@ -176,9 +178,27 @@ def test_parse_args_exposes_fixed_defaults(tmp_path):
         ]
     )
     assert parsed.phone == PHONE
+    assert parsed.region == "US"
+    assert parsed.locale == "en-US"
     assert parsed.confirm_consent == live_demo.CONSENT_PHRASE
     assert parsed.timeout_seconds == 600
     assert parsed.public_output == tmp_path / "proof.json"
+
+    gb = live_demo.parse_args(
+        [
+            "--phone",
+            "+442079460123",
+            "--region",
+            "GB",
+            "--locale",
+            "en-GB",
+            "--confirm-consent",
+            live_demo.CONSENT_PHRASE,
+        ]
+    )
+    request = parse_request(live_demo.synthetic_request(gb.phone, gb.region, gb.locale))
+    assert request.region == "GB"
+    assert request.locale == "en-GB"
 
 
 def test_main_reports_success_and_error(monkeypatch, capsys, tmp_path):
