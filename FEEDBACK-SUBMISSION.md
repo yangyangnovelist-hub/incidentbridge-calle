@@ -14,7 +14,7 @@ Yang
 yangyangnovelist-hub
 
 **Email associated with your CALL-E account**
-`<confirm the email shown in your CALL-E account before submitting>`
+yangyangnovelist@gmail.com
 
 **Did you start a project for this hackathon after July 23, 2026?**
 Yes
