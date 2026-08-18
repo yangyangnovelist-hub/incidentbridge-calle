@@ -205,7 +205,10 @@ def _ticket_corroborated(ticket_id: Any, transcript: str) -> bool:
     expected = _ticket_tokens(ticket_id)
     observed = _ticket_tokens(transcript)
     width = len(expected)
-    return any(observed[index : index + width] == expected for index in range(len(observed) - width + 1))
+    return any(
+        observed[index : index + width] == expected
+        for index in range(len(observed) - width + 1)
+    )
 
 
 def _bound_and_corroborated(
