@@ -2,6 +2,8 @@
 
 ![IncidentBridge incident-to-call-to-evidence workflow](assets/incidentbridge-cover.png)
 
+[![CI](https://github.com/yangyangnovelist-hub/incidentbridge-calle/actions/workflows/ci.yml/badge.svg)](https://github.com/yangyangnovelist-hub/incidentbridge-calle/actions/workflows/ci.yml)
+
 **A consent-first CALL-E agent that turns a vendor-support phone call into structured incident
 evidence without pretending the service recovered.**
 
