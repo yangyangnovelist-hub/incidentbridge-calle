@@ -12,6 +12,7 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 from incidentbridge.cli import execute_once
 from incidentbridge.models import IncidentRequest, parse_request
@@ -179,6 +180,9 @@ class OperatorHandler(BaseHTTPRequestHandler):
         payload: dict[str, Any],
     ) -> dict[str, Any]:
         config = self.server.config
+        host = urlsplit(f"//{self.headers.get('Host', '')}").hostname or ""
+        if not is_loopback_host(host):
+            raise ValueError("live execution requires a loopback Host header")
         if not config.enable_live_ui:
             raise ValueError("live execution is disabled on this operator server")
         if payload.get("confirm_authorized_recipient") is not True:
