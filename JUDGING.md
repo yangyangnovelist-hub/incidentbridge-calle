@@ -61,7 +61,8 @@ The contribution is reusable: the official CALL-E repository accepted IncidentBr
 - Durable SQLite reservation prevents duplicate or ambiguous retries.
 - Every free-text field entering the spoken task is screened for credentials, secrets and personal contact data.
 - Unbound, incomplete, low-confidence or uncorroborated results fail closed to `needs_human`.
-- 19 automated tests pass with 92.29% coverage.
+- Ticket corroboration rejects blank/`unknown` IDs and prefix/sub-string false matches while tolerating punctuation differences such as `SUP-4821` vs `SUP 4821`.
+- **GitHub Actions verified Ruff plus 21 passing tests at 92.37% coverage**, above the enforced 90% gate.
 - Integration tests exercise the actual SDK request/poll boundary through loopback HTTP rather than replacing the SDK with an internal mock.
 
 ### Independent upstream review
@@ -94,8 +95,8 @@ A successful route requires all of the following:
 - the provider result is bound to the correct workflow and incident;
 - the correct support desk consented after AI disclosure;
 - the vendor acknowledged the incident;
-- a ticket identifier was supplied; and
-- recipient transcript evidence corroborates that ticket.
+- a meaningful ticket identifier was supplied; and
+- recipient transcript evidence corroborates that ticket without accepting a shorter prefix as proof.
 
 Even then, `incident_closed` remains `false`.
 
