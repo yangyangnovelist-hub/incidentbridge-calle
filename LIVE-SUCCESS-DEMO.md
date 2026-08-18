@@ -13,7 +13,7 @@ A successful run can prove that:
 - CALL-E returns structured support facts;
 - IncidentBridge binds the result to the exact approved call/workflow/incident/destination;
 - the returned ticket is corroborated against recipient-side evidence; and
-- the final route can become `vendor_acknowledged` while `incident_closed` remains `false`.
+- the final route becomes `vendor_acknowledged` while `incident_closed` remains `false`.
 
 It does **not** prove that a real external vendor has adopted IncidentBridge or that a synthetic call reduced production MTTR.
 
@@ -27,18 +27,17 @@ Use only a phone number that:
 
 Do not call an emergency service, medical provider, government office, random business, or uninvolved third party for this validation.
 
-## Synthetic incident
+## Fixed synthetic incident
 
-Copy `examples/incident.json` to a temporary file and change only the phone number to the authorized recipient's real E.164 number.
+The one-shot runner creates the incident internally. It does **not** accept arbitrary production incident text, which reduces the chance of accidentally sending credentials or customer data into the public validation.
 
-Keep the fictional provider and incident content. Do not put real credentials, customer data, personal data, or production incident secrets into the test.
-
-Suggested scenario:
+The fixed scenario is:
 
 - provider: `ExampleCloud`
 - affected service: `managed ingestion endpoint`
-- incident: elevated synthetic `503` responses
-- ticket to return: `SUP-4821`
+- incident: synthetic elevated `503` responses
+- incident id: `INC-2026-0810`
+- expected ticket for the recipient to return: `SUP-4821`
 - vendor status: `investigating`
 - ETA: `30 minutes`
 - workaround: `retry through the secondary endpoint`
@@ -52,83 +51,97 @@ The consenting recipient should answer naturally, but the following facts should
 
 The recipient does not need to read this as one monologue. Natural question-and-answer behavior is preferable.
 
-## Run the preview first
+## One guarded command
+
+Install current `main` first:
 
 ```bash
-.venv/bin/incidentbridge --request /path/to/consented-live-incident.json
+uv sync --extra dev
 ```
 
-Confirm that:
-
-- the destination is masked in preview output;
-- the task contains only synthetic, non-secret information;
-- the expected result schema is correct; and
-- the decision boundary still says the phone result cannot close the incident.
-
-## Place exactly one authorized call
+Export the same two live CALL-E gates used by IncidentBridge:
 
 ```bash
 export CALLE_API_KEY="<CALL_E_API_KEY>"
 export CALLE_LIVE_CALLS_ENABLED="true"
-
-.venv/bin/incidentbridge \
-  --request /path/to/consented-live-incident.json \
-  --execute \
-  --confirm-authorized-recipient \
-  --allow +<AUTHORIZED_E164_NUMBER> \
-  --database data/consented-live-demo.sqlite3 \
-  --output artifacts/consented-live-success-private.json
 ```
 
-Do not blindly retry if the provider outcome is ambiguous. Inspect the durable reservation first.
+Then place **exactly one** call to the consenting number:
 
-## Public artifact boundary
-
-Before publishing anything, remove or mask:
-
-- the real phone number;
-- participant name or identity;
-- email addresses;
-- recordings;
-- unnecessary transcript text;
-- CALL-E credentials or tokens; and
-- any other personally identifying information.
-
-A public artifact should contain only the minimum proof needed, for example:
-
-```json
-{
-  "evidence_type": "consented_live_success_synthetic_scenario",
-  "provider": "CALL-E",
-  "scenario": "synthetic ExampleCloud support desk",
-  "recipient": "redacted consenting test number",
-  "call_id": "<real CALL-E call id>",
-  "status": "COMPLETED",
-  "task_completed": true,
-  "ticket_id": "SUP-4821",
-  "vendor_status": "investigating",
-  "eta_minutes": 30,
-  "decision": {
-    "route": "vendor_acknowledged",
-    "incident_closed": "false",
-    "automatic_retry": false
-  },
-  "corroboration": {
-    "ticket_supported_by_recipient_evidence": true
-  }
-}
+```bash
+uv run incidentbridge-consented-live-demo \
+  --phone +<AUTHORIZED_E164_NUMBER> \
+  --confirm-consent "I HAVE EXPLICIT CONSENT"
 ```
 
-Label it explicitly as a **consented live CALL-E success-path validation using a synthetic incident scenario**. Do not label it as a real vendor incident.
+The command deliberately fixes the synthetic incident and internally sets the exact phone allowlist to the same number supplied on the command line. It then uses the normal `execute_once` path, including the durable reservation and all result-binding/corroboration checks.
 
-## What to capture for the new demo video
+### If the call succeeds
 
-If the run succeeds, the highest-value video sequence is:
+The runner writes:
 
-1. show the safe preview and exact authorization gates;
-2. show the CALL-E call being initiated once;
-3. briefly show the redacted terminal result with the real call ID;
-4. show `ticket_id = SUP-4821` corroborated by recipient evidence;
+```text
+artifacts/consented-live-success.json
+```
+
+only if the final route is actually `vendor_acknowledged` and `incident_closed` remains `false`.
+
+The public artifact contains the real CALL-E call ID, status, completion confidence, redacted structured result, final decision, and a statement that ticket corroboration succeeded. It deliberately contains **no real phone number, participant identity, transcript, or recording**.
+
+The repository `.gitignore` allows this one public artifact to be committed after review.
+
+### If the call does not succeed
+
+No public success artifact is created. The result is written only to:
+
+```text
+data/consented-live-last-result.json
+```
+
+which is ignored by Git.
+
+Do **not** immediately redial. The same durable reservation prevents a blind duplicate call. Inspect the result and ledger first.
+
+## Public claim boundary
+
+The generated artifact labels itself as:
+
+**`consented_live_success_synthetic_scenario`**
+
+and explicitly states:
+
+> Real CALL-E transport and IncidentBridge success routing; synthetic incident with a consenting authorized test recipient, not a real vendor deployment.
+
+That is the strongest accurate claim. Do not rename it to imply a customer deployment or a real vendor incident.
+
+## Review before commit
+
+Even though the runner is designed to emit only public-safe fields, inspect the file once before `git add`:
+
+```bash
+cat artifacts/consented-live-success.json
+```
+
+Check that it contains:
+
+- a real CALL-E `call_id`;
+- `task_completed: true`;
+- ticket `SUP-4821`;
+- `decision.route: vendor_acknowledged`;
+- `decision.incident_closed: "false"`;
+- `ticket_supported_by_recipient_evidence: true`; and
+- no real phone number, name, transcript, recording, email, API key, or other participant identifier.
+
+Then the artifact can be committed as public evidence.
+
+## What to capture for the final demo video
+
+If the run succeeds, the highest-value sequence is:
+
+1. show the local operator preview / authorization boundary;
+2. show that exactly one real CALL-E call was initiated;
+3. show the generated public artifact with the real call ID;
+4. show `ticket_id = SUP-4821` and the corroboration result;
 5. show `route = vendor_acknowledged`; and
 6. end on `incident_closed = false`.
 
