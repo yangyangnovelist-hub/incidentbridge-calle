@@ -22,23 +22,24 @@
     section{padding:84px 0;border-bottom:2px solid var(--line)}.head{display:grid;grid-template-columns:.45fr 1.55fr;gap:30px;margin-bottom:38px}.head h2{font-size:clamp(40px,5.5vw,76px);line-height:.95;letter-spacing:-.055em;margin:0}.head p{max-width:760px;font-size:18px;line-height:1.6;color:var(--muted);margin:16px 0 0}
     .pain{display:grid;grid-template-columns:repeat(4,1fr);border:2px solid var(--line)}.pain article{padding:25px;min-height:210px;border-right:2px solid var(--line)}.pain article:last-child{border-right:0;background:var(--ink);color:#fff}.pain h3{font-size:25px;letter-spacing:-.03em;margin:38px 0 10px}.pain p{margin:0;color:var(--muted);line-height:1.5}.pain article:last-child p{color:#c6c0b5}
     .accept{display:grid;grid-template-columns:1fr 1fr;gap:18px}.card{border:2px solid var(--line);padding:30px;background:#fff9ee}.card.dark{background:var(--ink);color:#fff}.card h3{font-size:36px;letter-spacing:-.04em;margin:18px 0 12px}.card p{line-height:1.6;color:var(--muted)}.card.dark p{color:#bdb7ad}.check{color:var(--green)}
+    .flow{display:grid;grid-template-columns:repeat(5,1fr);border:2px solid var(--line)}.flow article{padding:23px;min-height:230px;border-right:2px solid var(--line);background:#fff9ee}.flow article:last-child{border-right:0;background:var(--ink);color:#fff}.flow h3{font-size:24px;letter-spacing:-.03em;margin:34px 0 10px}.flow p{margin:0;line-height:1.5;color:var(--muted)}.flow article:last-child p{color:#c4beb4}.step{color:var(--orange)}
     .console{display:grid;grid-template-columns:300px 1fr;border:2px solid var(--line);background:var(--ink);color:white;box-shadow:12px 12px 0 var(--orange)}.scenario{padding:24px;border-right:1px solid #49453f}.scenario button{width:100%;padding:15px;margin:0 0 9px;text-align:left;border:1px solid #4a463f;background:transparent;color:#d0cbc1;cursor:pointer}.scenario button.active,.scenario button:hover{background:var(--green);color:var(--ink);border-color:var(--green)}.scenario span{display:block;font-size:11px;margin-top:5px;opacity:.75}.console-main{padding:28px;overflow:hidden}.top{display:flex;justify-content:space-between;border-bottom:1px solid #49453f;padding-bottom:18px}.pill{color:var(--green)}.decision{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;margin:26px 0}.decision h3{font-size:clamp(35px,5vw,62px);line-height:.92;letter-spacing:-.05em;color:var(--green);margin:8px 0 0}.decision strong{font-size:38px;color:var(--orange)}pre{white-space:pre-wrap;max-height:310px;overflow:auto;background:#1d1b18;border-left:5px solid var(--cyan);padding:18px;font:12px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;color:#ddd8cf}
     .proof{display:grid;grid-template-columns:repeat(4,1fr);border:2px solid var(--line)}.proof div{padding:23px;min-height:165px;border-right:2px solid var(--line)}.proof div:last-child{border-right:0;background:var(--orange)}.proof strong{display:block;font-size:clamp(30px,4vw,52px);letter-spacing:-.05em;margin:30px 0 7px}
     .boundary{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}.boundary .card{min-height:285px}.boundary ul{padding-left:20px;line-height:1.8;color:var(--muted)}.boundary .dark ul{color:#c4beb4}
     footer{display:flex;justify-content:space-between;padding:42px 0 65px;color:var(--muted)}
-    @media(max-width:850px){.hero,.head,.accept,.boundary{grid-template-columns:1fr}.hero-visual{border-left:0;border-top:2px solid var(--line);min-height:480px}.pain,.proof{grid-template-columns:1fr 1fr}.pain article:nth-child(2),.proof div:nth-child(2){border-right:0}.console{grid-template-columns:1fr}.scenario{border-right:0;border-bottom:1px solid #49453f}}
-    @media(max-width:560px){.links{display:none}.wrap{width:min(100% - 24px,1180px)}.hero-copy{padding-right:0}.pain,.proof,.metrics{grid-template-columns:1fr}.pain article,.proof div{border-right:0;border-bottom:2px solid var(--line)}.decision{grid-template-columns:1fr}.hero{min-height:auto}}
+    @media(max-width:850px){.hero,.head,.accept,.boundary{grid-template-columns:1fr}.hero-visual{border-left:0;border-top:2px solid var(--line);min-height:480px}.pain,.proof{grid-template-columns:1fr 1fr}.pain article:nth-child(2),.proof div:nth-child(2){border-right:0}.flow{grid-template-columns:1fr 1fr}.flow article:nth-child(2n){border-right:0}.flow article:last-child{grid-column:span 2}.console{grid-template-columns:1fr}.scenario{border-right:0;border-bottom:1px solid #49453f}}
+    @media(max-width:560px){.links{display:none}.wrap{width:min(100% - 24px,1180px)}.hero-copy{padding-right:0}.pain,.proof,.metrics,.flow{grid-template-columns:1fr}.pain article,.proof div,.flow article{border-right:0;border-bottom:2px solid var(--line)}.flow article:last-child{grid-column:auto}.decision{grid-template-columns:1fr}.hero{min-height:auto}}
   </style>
 </head>
 <body>
-  <nav class="wrap"><a href="#top"><strong>IncidentBridge</strong></a><div class="links mono"><a href="#problem">Problem</a><a href="#acceptance">Acceptance</a><a href="#evidence">Evidence</a><a href="#proof">Proof</a></div></nav>
+  <nav class="wrap"><a href="#top"><strong>IncidentBridge</strong></a><div class="links mono"><a href="#workflow">Workflow</a><a href="#console">Evidence</a><a href="#proof">Proof</a></div></nav>
   <main id="top">
     <header class="hero wrap">
       <div class="hero-copy">
         <div class="eyebrow mono">CALL-E · Most Practical Use Case</div>
         <h1>The vendor call you should not be making during an outage.</h1>
         <p>IncidentBridge gives CALL-E exactly one bounded job: call an authorized vendor support line, collect ticket / status / ETA / workaround facts, and return corroborated evidence. The phone agent never gets authority to declare recovery.</p>
-        <div class="cta"><a href="#evidence">Inspect the decision paths</a><a class="secondary" href="https://github.com/yangyangnovelist-hub/incidentbridge-calle/blob/main/JUDGING.md">Judge guide ↗</a></div>
+        <div class="cta"><a href="#console">Inspect the decision paths</a><a class="secondary" href="https://github.com/yangyangnovelist-hub/incidentbridge-calle/blob/main/JUDGING.md">Judge guide ↗</a></div>
       </div>
       <div class="hero-visual">
         <img src="assets/incidentbridge-cover.png" alt="IncidentBridge vendor support call workflow" />
@@ -70,16 +71,27 @@
         <article class="card"><div class="mono">Blocker 01</div><h3>Spoken fields could leak sensitive data.</h3><p>Privacy validation originally covered only the incident summary. The fix now screens every free-text field that can enter the spoken task for credentials, secrets and personal contact data.</p></article>
         <article class="card dark"><div class="mono check">Blocker 02 · fixed</div><h3>A confident result was not enough.</h3><p>A successful result must now bind to the exact workflow, incident, call ID and authorized destination, then corroborate the returned vendor ticket against recipient transcript evidence. Otherwise it fails closed to <code>needs_human</code>.</p></article>
       </div>
-      <div class="cta"><a href="https://github.com/CALLE-AI/awesome-phone-call-agents/pull/132">Open merged CALL-E PR #132 ↗</a><a class="secondary" href="https://github.com/yangyangnovelist-hub/incidentbridge-calle">Source repo ↗</a></div>
+      <div class="cta"><a href="https://github.com/CALLE-AI/awesome-phone-call-agents/pull/132">Open merged CALL-E PR #132 ↗</a><a class="secondary" href="https://github.com/CALLE-AI/awesome-phone-call-agents/tree/main/apps/python/incidentbridge">Official merged app ↗</a></div>
     </div></section>
 
-    <section id="evidence"><div class="wrap">
-      <div class="head"><div class="mono">03 / Product experience</div><div><h2>Three paths. No hidden success.</h2><p>The console separates public live-provider evidence, a no-call authorization preview, and a deterministic success-path simulation. The labels are explicit so a judge can see what is real, what is previewed, and what is simulated.</p></div></div>
+    <section id="workflow"><div class="wrap">
+      <div class="head"><div class="mono">03 / Controlled workflow</div><div><h2>Every transition narrows authority instead of expanding it.</h2><p>The phone call is only one step. Validation, preview, exact authorization, durable dispatch state and evidence corroboration all happen around it.</p></div></div>
+      <div class="flow">
+        <article><span class="mono step">01</span><h3>Validate</h3><p>Reject secrets, contact data in spoken fields, unsupported identifiers and unauthorized recipients before a task exists.</p></article>
+        <article><span class="mono step">02</span><h3>Preview</h3><p>Show the masked destination, exact CALL-E task, strict result schema and idempotency identity with zero phone side effect.</p></article>
+        <article><span class="mono step">03</span><h3>Authorize</h3><p>Live mode needs explicit execute intent, recipient authorization and an exact E.164 allowlist match.</p></article>
+        <article><span class="mono step">04</span><h3>Reserve + call</h3><p>Write durable state before dispatch. Ambiguity becomes reconciliation, never a blind second dial.</p></article>
+        <article><span class="mono step">05</span><h3>Corroborate</h3><p>Bind workflow, incident, call and destination, then require recipient evidence for the ticket. Recovery still remains human-owned.</p></article>
+      </div>
+    </div></section>
+
+    <section id="console"><div class="wrap">
+      <div class="head"><div class="mono">04 / Product experience</div><div><h2>Three paths. No hidden success.</h2><p>The console separates public live-provider evidence, a no-call authorization preview, and a deterministic success-path simulation. The labels are explicit so a judge can see what is real, what is previewed, and what is simulated.</p></div></div>
       <div class="console">
         <aside class="scenario"><div class="mono">Scenario</div><h3>Inspect a route</h3>
-          <button class="active" data-source="calle-live-no-answer.json" data-label="Public live provider run"><b>Live provider boundary</b><span>real CALL-E · voicemail unavailable · fail closed</span></button>
-          <button data-source="example-preview.json" data-label="Authorization preview"><b>No-call preview</b><span>masked · creates no call</span></button>
-          <button data-source="example-simulation.json" data-label="Deterministic success simulation"><b>Acknowledged path</b><span>simulated · strict success routing</span></button>
+          <button class="scenario-button active" data-source="calle-live-no-answer.json" data-label="Public live provider run"><b>Live provider call</b><span>real CALL-E · voicemail unavailable · fail closed</span></button>
+          <button class="scenario-button" data-source="example-preview.json" data-label="Authorization preview"><b>Authorization preview</b><span>masked · creates no call</span></button>
+          <button class="scenario-button" data-source="example-simulation.json" data-label="Deterministic success simulation"><b>Vendor acknowledged</b><span>simulated · strict success routing</span></button>
         </aside>
         <div class="console-main">
           <div class="top mono"><span id="scenarioLabel">Public live provider run</span><span id="statusPill" class="pill">Loading</span></div>
@@ -91,7 +103,7 @@
     </div></section>
 
     <section id="proof"><div class="wrap">
-      <div class="head"><div class="mono">04 / Technical implementation</div><div><h2>Built to survive a skeptical read, not just a happy-path demo.</h2><p>The published CALL-E Python SDK is actually imported and called at runtime. The rest of the implementation is built around exact authorization, duplicate prevention, strict structured results and fail-closed routing.</p></div></div>
+      <div class="head"><div class="mono">05 / Technical implementation</div><div><h2>Built to survive a skeptical read, not just a happy-path demo.</h2><p>The published CALL-E Python SDK is actually imported and called at runtime. The rest of the implementation is built around exact authorization, duplicate prevention, strict structured results and fail-closed routing.</p></div></div>
       <div class="proof">
         <div><span class="mono">Automated tests</span><strong>19</strong><span>passing</span></div>
         <div><span class="mono">Coverage</span><strong>92.29%</strong><span>90% enforced gate</span></div>
@@ -102,12 +114,12 @@
         <article class="card"><div class="mono">The agent may</div><h3>Collect bounded operational facts.</h3><ul><li>Disclose AI identity and ask for consent</li><li>Confirm the correct support desk</li><li>Collect ticket, status, ETA, workaround and callback window</li><li>Return a structured, corroborated result</li></ul></article>
         <article class="card dark"><div class="mono check">The agent may not</div><h3>Turn a phone result into recovery authority.</h3><ul><li>No credentials, payments or contract changes</li><li>No ambiguous automatic redial</li><li>No uncorroborated <code>vendor_acknowledged</code></li><li>No incident closure without human + local health verification</li></ul></article>
       </div>
-      <div class="cta"><a href="https://github.com/yangyangnovelist-hub/incidentbridge-calle/blob/main/JUDGING.md">Read judge guide ↗</a><a class="secondary" href="https://github.com/yangyangnovelist-hub/incidentbridge-calle/blob/main/tests/test_policy.py">Inspect regression tests ↗</a></div>
+      <div class="cta"><a href="https://github.com/yangyangnovelist-hub/incidentbridge-calle/blob/main/JUDGING.md">Read judge guide ↗</a><a class="secondary" href="https://github.com/yangyangnovelist-hub/incidentbridge-calle/blob/main/TESTING.md">Fast testing path ↗</a></div>
     </div></section>
   </main>
   <footer class="wrap"><span>IncidentBridge · CALL-E · MIT</span><span>Calls become evidence, never authority.</span></footer>
   <script>
-    const buttons=[...document.querySelectorAll('.scenario button')],route=document.getElementById('routeValue'),closed=document.getElementById('closedValue'),label=document.getElementById('scenarioLabel'),pill=document.getElementById('statusPill'),output=document.getElementById('evidenceJson');
+    const buttons=[...document.querySelectorAll('.scenario-button')],route=document.getElementById('routeValue'),closed=document.getElementById('closedValue'),label=document.getElementById('scenarioLabel'),pill=document.getElementById('statusPill'),output=document.getElementById('evidenceJson');
     async function render(button){buttons.forEach(x=>x.classList.toggle('active',x===button));label.textContent=button.dataset.label;pill.textContent='Loading';try{const r=await fetch(button.dataset.source);if(!r.ok)throw new Error(`HTTP ${r.status}`);const d=await r.json(),decision=d.decision||{},preview=d.mode==='preview';route.textContent=preview?'awaiting authorization':(decision.route||(d.task_completed===false?'needs_human':'inspect result'));closed.textContent=preview?'human-owned':(decision.incident_closed||'false');pill.textContent=d.status||d.mode||'evidence';output.textContent=JSON.stringify(d,null,2)}catch(e){pill.textContent='Unavailable';route.textContent='evidence load failed';output.textContent=String(e)}}
     buttons.forEach(b=>b.addEventListener('click',()=>render(b)));render(buttons[0]);
   </script>
