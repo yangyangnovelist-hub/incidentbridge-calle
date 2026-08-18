@@ -251,14 +251,10 @@ def test_web_host_and_server_startup_guards(tmp_path: Path):
         args = argparse.Namespace(host="127.0.0.1", allow=[], **base)
         build_server(args)
 
-    invalid = dict(base)
-    invalid["enable_live_ui"] = False
+    invalid = {**base, "enable_live_ui": False, "port": -1}
     with pytest.raises(ValueError, match="port"):
-        build_server(
-            argparse.Namespace(host="127.0.0.1", allow=[], port=-1, **invalid)
-        )
-    invalid["port"] = 0
-    invalid["timeout_seconds"] = 0
+        build_server(argparse.Namespace(host="127.0.0.1", allow=[], **invalid))
+    invalid = {**invalid, "port": 0, "timeout_seconds": 0}
     with pytest.raises(ValueError, match="positive"):
         build_server(argparse.Namespace(host="127.0.0.1", allow=[], **invalid))
 
@@ -285,10 +281,9 @@ def test_web_parse_args_and_main_shutdown(monkeypatch, capsys, tmp_path: Path):
     assert fake.closed is True
     assert "operator console" in capsys.readouterr().out
 
-    monkeypatch.setattr(
-        web,
-        "build_server",
-        lambda args: (_ for _ in ()).throw(ValueError("bad server")),
-    )
+    def bad_server(args):
+        raise ValueError("bad server")
+
+    monkeypatch.setattr(web, "build_server", bad_server)
     assert web.main([]) == 2
     assert "bad server" in capsys.readouterr().err
