@@ -25,38 +25,62 @@ const moveTo = async (selector) => {
 const demoUrl =
   process.env.INCIDENTBRIDGE_DEMO_URL ||
   "https://yangyangnovelist-hub.github.io/incidentbridge-calle/";
+const impactUrl = new URL("impact-calculator.html", demoUrl).toString();
+
 await page.goto(demoUrl, { waitUntil: "networkidle" });
 await page.waitForFunction(() => document.querySelector("#statusPill")?.textContent !== "Loading");
 await moveTo(".hero-copy h1");
-await pause(17);
+await pause(13);
 
 await page.locator("#workflow").scrollIntoViewIfNeeded();
-await pause(2);
 await moveTo(".flow article:nth-child(1)");
-await pause(17);
+await pause(18);
 
 await page.locator("#console").scrollIntoViewIfNeeded();
 await pause(4);
 await moveTo(".scenario-button:nth-of-type(1)");
-await pause(12);
+await pause(10);
+
 await moveTo(".scenario-button:nth-of-type(2)");
 await page.locator(".scenario-button:nth-of-type(2)").click();
-await pause(13);
+await pause(12);
+
 await moveTo(".scenario-button:nth-of-type(3)");
 await page.locator(".scenario-button:nth-of-type(3)").click();
-await pause(13);
+await pause(12);
+
+await page.locator("#acceptance").scrollIntoViewIfNeeded();
+await pause(3);
+await moveTo(".accept article:nth-child(2)");
+await pause(16);
 
 await page.locator("#proof").scrollIntoViewIfNeeded();
-await pause(4);
+await pause(3);
 await moveTo(".proof div:nth-child(2)");
 await pause(16);
-await page.locator(".boundary").scrollIntoViewIfNeeded();
-await pause(14);
 
-await page.locator("#proof .cta").scrollIntoViewIfNeeded();
-await pause(16);
-await page.evaluate(() => window.scrollTo({ top: 0, behavior: "smooth" }));
-await pause(10);
+await page.goto(impactUrl, { waitUntil: "networkidle" });
+await moveTo("h1");
+await pause(8);
+
+await page.locator("#calls").evaluate((input) => {
+  input.value = "4";
+  input.dispatchEvent(new Event("input", { bubbles: true }));
+});
+await page.locator("#manual").evaluate((input) => {
+  input.value = "30";
+  input.dispatchEvent(new Event("input", { bubbles: true }));
+});
+await page.locator("#review").evaluate((input) => {
+  input.value = "4";
+  input.dispatchEvent(new Event("input", { bubbles: true }));
+});
+await page.locator("#eligible").evaluate((input) => {
+  input.value = "75";
+  input.dispatchEvent(new Event("input", { bubbles: true }));
+});
+await moveTo("#hours");
+await pause(14);
 
 await page.close();
 await context.close();
