@@ -19,13 +19,16 @@ const video = page.video();
 const pause = (seconds) => page.waitForTimeout(seconds * 1000);
 const moveTo = async (selector) => {
   const box = await page.locator(selector).boundingBox();
-  if (box) await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 24 });
+  if (box) {
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 24 });
+  }
 };
 
 const demoUrl =
   process.env.INCIDENTBRIDGE_DEMO_URL ||
   "https://yangyangnovelist-hub.github.io/incidentbridge-calle/";
 const impactUrl = new URL("impact-calculator.html", demoUrl).toString();
+const operatorUrl = process.env.INCIDENTBRIDGE_OPERATOR_URL || "http://127.0.0.1:8766/";
 
 await page.goto(demoUrl, { waitUntil: "networkidle" });
 await page.waitForFunction(() => document.querySelector("#statusPill")?.textContent !== "Loading");
@@ -49,6 +52,16 @@ await moveTo(".scenario-button:nth-of-type(3)");
 await page.locator(".scenario-button:nth-of-type(3)").click();
 await pause(12);
 
+await page.goto(operatorUrl, { waitUntil: "networkidle" });
+await moveTo("#preview");
+await pause(5);
+await page.locator("#preview").click();
+await page.waitForFunction(() => document.querySelector("#status")?.textContent !== "Working…");
+await moveTo("#output");
+await pause(14);
+
+await page.goto(demoUrl, { waitUntil: "networkidle" });
+await page.waitForFunction(() => document.querySelector("#statusPill")?.textContent !== "Loading");
 await page.locator("#acceptance").scrollIntoViewIfNeeded();
 await pause(3);
 await moveTo(".accept article:nth-child(2)");
