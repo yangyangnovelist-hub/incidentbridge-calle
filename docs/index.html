@@ -32,14 +32,14 @@
   </style>
 </head>
 <body>
-  <nav class="wrap"><a href="#top"><strong>IncidentBridge</strong></a><div class="links mono"><a href="#workflow">Workflow</a><a href="#console">Evidence</a><a href="#proof">Proof</a></div></nav>
+  <nav class="wrap"><a href="#top"><strong>IncidentBridge</strong></a><div class="links mono"><a href="#workflow">Workflow</a><a href="#console">Evidence</a><a href="impact-calculator.html">Impact</a><a href="#proof">Proof</a></div></nav>
   <main id="top">
     <header class="hero wrap">
       <div class="hero-copy">
         <div class="eyebrow mono">CALL-E · Most Practical Use Case</div>
         <h1>The vendor call you should not be making during an outage.</h1>
         <p>IncidentBridge gives CALL-E exactly one bounded job: call an authorized vendor support line, collect ticket / status / ETA / workaround facts, and return corroborated evidence. The phone agent never gets authority to declare recovery.</p>
-        <div class="cta"><a href="#console">Inspect the decision paths</a><a class="secondary" href="https://github.com/yangyangnovelist-hub/incidentbridge-calle/blob/main/JUDGING.md">Judge guide ↗</a></div>
+        <div class="cta"><a href="#console">Inspect the decision paths</a><a href="impact-calculator.html">Model operator time</a><a class="secondary" href="https://github.com/yangyangnovelist-hub/incidentbridge-calle/blob/main/JUDGING.md">Judge guide ↗</a></div>
       </div>
       <div class="hero-visual">
         <img src="assets/incidentbridge-cover.png" alt="IncidentBridge vendor support call workflow" />
@@ -48,8 +48,8 @@
           <div class="metrics">
             <div class="metric"><span class="mono">Official repo</span><strong>CALL-E</strong></div>
             <div class="metric"><span class="mono">Contribution</span><strong>PR #132</strong></div>
-            <div class="metric"><span class="mono">Status</span><strong>Merged</strong></div>
-            <div class="metric"><span class="mono">Validation</span><strong>CI verified</strong></div>
+            <div class="metric"><span class="mono">Tests</span><strong>33</strong></div>
+            <div class="metric"><span class="mono">Coverage</span><strong>93.80%</strong></div>
           </div>
         </div>
       </div>
@@ -63,6 +63,7 @@
         <article><div class="mono">Pain</div><h3>Transcription</h3><p>Ticket, status, ETA and workaround facts are manually copied back into the response workflow.</p></article>
         <article><div class="mono">Product boundary</div><h3>Delegate conversation, not authority.</h3><p>CALL-E gathers facts. Local health checks and the human incident commander still decide whether recovery is real.</p></article>
       </div>
+      <div class="cta"><a href="impact-calculator.html">Use your own impact assumptions →</a><a class="secondary" href="https://github.com/yangyangnovelist-hub/incidentbridge-calle/blob/main/IMPACT.md">Read methodology ↗</a></div>
     </div></section>
 
     <section id="acceptance"><div class="wrap">
@@ -99,22 +100,23 @@
           <pre id="evidenceJson">Loading evidence…</pre>
         </div>
       </div>
-      <p style="margin-top:26px;color:var(--muted);line-height:1.6">Successful live-call behavior has also been validated privately through direct testing, packaged external testing, and testing with randomly selected users. Those materials are intentionally not published because they contain real participant and conversation data.</p>
+      <p style="margin-top:26px;color:var(--muted);line-height:1.6">Successful live-call behavior has also been validated privately through direct testing, packaged external testing, and testing with randomly selected users. Those materials are intentionally not published because they contain real participant and conversation data. A one-shot consented synthetic live-success runner is now included so the full real success boundary can be published without exposing the participant.</p>
+      <div class="cta"><a href="https://github.com/yangyangnovelist-hub/incidentbridge-calle/blob/main/OPERATOR-CONSOLE.md">Run local operator console ↗</a><a class="secondary" href="https://github.com/yangyangnovelist-hub/incidentbridge-calle/blob/main/LIVE-SUCCESS-DEMO.md">Consented live-success protocol ↗</a></div>
     </div></section>
 
     <section id="proof"><div class="wrap">
-      <div class="head"><div class="mono">05 / Technical implementation</div><div><h2>Built to survive a skeptical read, not just a happy-path demo.</h2><p>The published CALL-E Python SDK is actually imported and called at runtime. GitHub Actions now enforces the lint and safety regression suite on every main push and pull request.</p></div></div>
+      <div class="head"><div class="mono">05 / Technical implementation</div><div><h2>Built to survive a skeptical read, not just a happy-path demo.</h2><p>The published CALL-E Python SDK is actually imported and called at runtime. The final award-sprint GitHub Actions run verifies lint, 33 regression tests, 93.80% total coverage, and demo-source syntax.</p></div></div>
       <div class="proof">
-        <div><span class="mono">Automated tests</span><strong>21</strong><span>CI verified</span></div>
-        <div><span class="mono">Coverage</span><strong>92.37%</strong><span>90% enforced gate</span></div>
-        <div><span class="mono">Upstream review</span><strong>2→0</strong><span>blockers fixed</span></div>
+        <div><span class="mono">Automated tests</span><strong>33</strong><span>CI verified</span></div>
+        <div><span class="mono">Coverage</span><strong>93.80%</strong><span>90% enforced gate</span></div>
+        <div><span class="mono">Live proof runner</span><strong>99%</strong><span>module coverage</span></div>
         <div><span class="mono">Official adoption</span><strong>Merged</strong><span>CALL-E PR #132</span></div>
       </div>
       <div class="boundary">
         <article class="card"><div class="mono">The agent may</div><h3>Collect bounded operational facts.</h3><ul><li>Disclose AI identity and ask for consent</li><li>Confirm the correct support desk</li><li>Collect ticket, status, ETA, workaround and callback window</li><li>Return a structured, corroborated result</li></ul></article>
         <article class="card dark"><div class="mono check">The agent may not</div><h3>Turn a phone result into recovery authority.</h3><ul><li>No credentials, payments or contract changes</li><li>No ambiguous automatic redial</li><li>No uncorroborated <code>vendor_acknowledged</code></li><li>No incident closure without human + local health verification</li></ul></article>
       </div>
-      <div class="cta"><a href="https://github.com/yangyangnovelist-hub/incidentbridge-calle/blob/main/JUDGING.md">Read judge guide ↗</a><a class="secondary" href="https://github.com/yangyangnovelist-hub/incidentbridge-calle/blob/main/TESTING.md">Fast testing path ↗</a></div>
+      <div class="cta"><a href="https://github.com/yangyangnovelist-hub/incidentbridge-calle/blob/main/JUDGING.md">Read judge guide ↗</a><a class="secondary" href="https://github.com/yangyangnovelist-hub/incidentbridge-calle/blob/main/TESTING.md">Fast testing path ↗</a><a class="secondary" href="https://github.com/yangyangnovelist-hub/incidentbridge-calle/blob/main/PRIOR-ART.md">Compare adjacent CALL-E patterns ↗</a></div>
     </div></section>
   </main>
   <footer class="wrap"><span>IncidentBridge · CALL-E · MIT</span><span>Calls become evidence, never authority.</span></footer>
