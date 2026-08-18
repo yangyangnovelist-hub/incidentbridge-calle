@@ -115,9 +115,14 @@ def test_consent_live_demo_failure_stays_local_and_no_blind_retry(tmp_path, monk
     assert failure["decision"]["route"] == "needs_human"
 
 
-def test_consent_live_demo_requires_exact_consent_and_fresh_public_output(tmp_path):
+def test_consent_live_demo_requires_exact_consent_fresh_output_and_timeout(tmp_path):
     with pytest.raises(ValueError, match="I HAVE EXPLICIT CONSENT"):
         live_demo.run(args(tmp_path, confirm="yes"))
+
+    timeout_args = args(tmp_path)
+    timeout_args.timeout_seconds = 0
+    with pytest.raises(ValueError, match="positive"):
+        live_demo.run(timeout_args)
 
     public = tmp_path / "public.json"
     public.write_text("{}\n", encoding="utf-8")
@@ -125,7 +130,7 @@ def test_consent_live_demo_requires_exact_consent_and_fresh_public_output(tmp_pa
         live_demo.run(args(tmp_path))
 
 
-def test_public_proof_rejects_non_success():
+def test_public_proof_rejects_non_success_invalid_authority_and_shape():
     with pytest.raises(ValueError, match="vendor_acknowledged"):
         live_demo.public_proof(
             {
@@ -133,3 +138,87 @@ def test_public_proof_rejects_non_success():
                 "structured_result": {},
             }
         )
+
+    with pytest.raises(ValueError, match="incident_closed=false"):
+        live_demo.public_proof(
+            {
+                "decision": {
+                    "route": "vendor_acknowledged",
+                    "incident_closed": "true",
+                },
+                "structured_result": {},
+            }
+        )
+
+    with pytest.raises(ValueError, match="structured result"):
+        live_demo.public_proof(
+            {
+                "decision": {
+                    "route": "vendor_acknowledged",
+                    "incident_closed": "false",
+                },
+                "structured_result": None,
+            }
+        )
+
+
+def test_parse_args_exposes_fixed_defaults(tmp_path):
+    parsed = live_demo.parse_args(
+        [
+            "--phone",
+            PHONE,
+            "--confirm-consent",
+            live_demo.CONSENT_PHRASE,
+            "--database",
+            str(tmp_path / "ledger.sqlite3"),
+            "--public-output",
+            str(tmp_path / "proof.json"),
+        ]
+    )
+    assert parsed.phone == PHONE
+    assert parsed.confirm_consent == live_demo.CONSENT_PHRASE
+    assert parsed.timeout_seconds == 600
+    assert parsed.public_output == tmp_path / "proof.json"
+
+
+def test_main_reports_success_and_error(monkeypatch, capsys, tmp_path):
+    proof_path = tmp_path / "proof.json"
+
+    def fake_run(parsed):
+        assert parsed.phone == PHONE
+        return {"call_id": "call_public_001"}
+
+    monkeypatch.setattr(live_demo, "run", fake_run)
+    assert (
+        live_demo.main(
+            [
+                "--phone",
+                PHONE,
+                "--confirm-consent",
+                live_demo.CONSENT_PHRASE,
+                "--public-output",
+                str(proof_path),
+            ]
+        )
+        == 0
+    )
+    output = capsys.readouterr().out
+    assert "call_public_001" in output
+    assert str(proof_path) in output
+
+    def bad_run(parsed):
+        raise ValueError("synthetic validation failed")
+
+    monkeypatch.setattr(live_demo, "run", bad_run)
+    assert (
+        live_demo.main(
+            [
+                "--phone",
+                PHONE,
+                "--confirm-consent",
+                live_demo.CONSENT_PHRASE,
+            ]
+        )
+        == 2
+    )
+    assert "synthetic validation failed" in capsys.readouterr().err
