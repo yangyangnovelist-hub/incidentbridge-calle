@@ -8,8 +8,16 @@
 evidence without pretending the service recovered.**
 
 [Open the live evidence console](https://yangyangnovelist-hub.github.io/incidentbridge-calle/) ·
+[Model operator-time impact](https://yangyangnovelist-hub.github.io/incidentbridge-calle/impact-calculator.html) ·
 [Review the official CALL-E contribution](https://github.com/CALLE-AI/awesome-phone-call-agents/pull/132) ·
 [Read the judge guide](JUDGING.md)
+
+## Judge in 90 seconds
+
+1. Open the [evidence console](https://yangyangnovelist-hub.github.io/incidentbridge-calle/) and switch between the real fail-closed provider run, zero-call authorization preview, and deterministic acknowledged path.
+2. Open [PR #132](https://github.com/CALLE-AI/awesome-phone-call-agents/pull/132) to verify that CALL-E maintainers reviewed the implementation, found two substantive safety blockers, and merged the corrected app.
+3. Open the [impact calculator](https://yangyangnovelist-hub.github.io/incidentbridge-calle/impact-calculator.html) and use your own assumptions to estimate operator attention returned by delegating bounded vendor-support phone work.
+4. Run the safe local reproduction in [`TESTING.md`](TESTING.md). No CALL-E key or external phone call is required for the preview, simulations, or SDK boundary test.
 
 ## Official CALL-E acceptance
 
@@ -23,6 +31,26 @@ the spoken task needed secret/privacy validation, and a successful terminal resu
 bound to the approved workflow, incident, call and destination and corroborated by recipient
 transcript evidence. Both requirements are implemented in the current code and locked in by
 regression tests in `tests/test_policy.py`.
+
+## Real-world impact boundary
+
+The product makes one deliberately narrow impact claim: **when an external vendor-support call can
+be delegated safely, the on-call operator can avoid spending active attention on queueing, repeating
+incident context, and manually transcribing the vendor response.**
+
+IncidentBridge does not invent a universal MTTR reduction. Instead, [`IMPACT.md`](IMPACT.md) defines
+a transparent operator-time model and a public browser calculator that lets a team use its own
+call volume and time assumptions:
+
+```text
+operator_minutes_reclaimed
+  = manual_operator_minutes - approval_and_review_minutes
+```
+
+The first business KPI for a real pilot is operator minutes reclaimed per delegated call. The first
+safety KPIs are unauthorized-call rate and false-success rate, both of which should remain zero.
+
+[Open the transparent impact calculator](https://yangyangnovelist-hub.github.io/incidentbridge-calle/impact-calculator.html).
 
 ## Validation status
 
@@ -39,6 +67,10 @@ Current reproducible checks:
 - A real CALL-E provider call ID is preserved in the redacted public fail-closed artifact.
 - The implementation has completed upstream maintainer review and is merged into CALL-E's official
   phone-agent repository.
+
+For an additional public success-path proof without exposing private participants, the repository
+also includes a [`consented live success protocol`](LIVE-SUCCESS-DEMO.md) that uses a synthetic
+incident and a phone number owned by or explicitly authorized by the tester.
 
 When a critical SaaS or data dependency fails, operators often lose time waiting on a support line,
 repeating context, and manually copying a ticket number and ETA into an incident channel.
