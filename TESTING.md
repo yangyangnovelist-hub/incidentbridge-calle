@@ -1,6 +1,16 @@
 # IncidentBridge — Fast Judge Testing
 
-This path is intentionally safe: the first three checks do **not** place a phone call and do not require a CALL-E API key.
+This path is intentionally safe: the first four checks do **not** place a phone call and do not require a CALL-E API key.
+
+## 0. Ninety-second judge path
+
+If you only have ninety seconds:
+
+1. Open the evidence console: https://yangyangnovelist-hub.github.io/incidentbridge-calle/
+2. Click all three scenarios and verify the route changes while `incident_closed` never becomes true.
+3. Open the impact calculator: https://yangyangnovelist-hub.github.io/incidentbridge-calle/impact-calculator.html and change the assumptions.
+4. Verify official upstream acceptance: https://github.com/CALLE-AI/awesome-phone-call-agents/pull/132
+5. Inspect `tests/test_sdk_runtime.py` and `tests/test_policy.py` for the real SDK boundary and fail-closed invariants.
 
 ## 1. Inspect the live product surface
 
@@ -13,6 +23,10 @@ The page exposes three clearly labeled states:
 - a redacted **real CALL-E provider boundary** that failed closed when the destination could not complete the conversation;
 - a **no-call authorization preview**; and
 - a **deterministic success-path simulation** that shows the complete `vendor_acknowledged` route without representing simulated data as a live call.
+
+The separate impact calculator runs entirely in the browser and lets a judge test the real-world value proposition with their own assumptions rather than relying on a fabricated ROI claim:
+
+https://yangyangnovelist-hub.github.io/incidentbridge-calle/impact-calculator.html
 
 ## 2. Install
 
@@ -80,8 +94,24 @@ CALL-E maintainers reviewed the contribution and merged it into the official rep
 
 A follow-up hardening branch for ticket corroboration is also maintained in the contributor fork so the official app can receive the same adversarial fix.
 
+## 7. Inspect the impact methodology
+
+Read `IMPACT.md` for the transparent model. It intentionally measures operator attention returned to incident work rather than claiming an unmeasured universal MTTR reduction.
+
+The recommended production-pilot metrics include:
+
+- manual operator minutes per vendor-support interaction;
+- approval/review minutes after delegation;
+- exception rate;
+- evidence completeness;
+- duplicate-call rate;
+- unauthorized-call rate; and
+- false-success rate.
+
 ## Optional live execution
 
 A live call should only be made to a business number the tester owns or is explicitly authorized to call. Live mode additionally requires an exact-number allowlist, an explicit authorization flag, `CALLE_LIVE_CALLS_ENABLED=true`, and a valid CALL-E API key.
+
+For a public success-path validation without exposing private participant data, use the synthetic, consented protocol in `LIVE-SUCCESS-DEMO.md`.
 
 The repository does not include real phone numbers, credentials, recordings or private participant transcripts.
