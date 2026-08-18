@@ -76,7 +76,7 @@ The implementation uses the published CALL-E Python SDK at runtime, not a placeh
 
 20
 00:01:53,813 --> 00:01:58,120
-Nineteen tests pass with ninety-two point two nine percent coverage.
+Twenty-one tests pass with ninety-two point three seven percent coverage in GitHub Actions.
 
 21
 00:01:58,240 --> 00:02:09,436
