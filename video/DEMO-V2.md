@@ -11,7 +11,7 @@ The story order is:
 5. no-call preview and acknowledged route;
 6. the verified local operator console in preview-only mode;
 7. independent CALL-E maintainer review and official merge;
-8. current runtime SDK / CI proof; and
+8. final runtime SDK / CI proof; and
 9. transparent operator-time impact model.
 
 The reviewed narration ends at approximately **2:28**, comfortably below the hackathon's three-minute limit.
@@ -61,17 +61,34 @@ Watch the entire MP4 once and confirm:
 - the acknowledged public-browser scenario is clearly labeled as simulation unless a public consented live success artifact has been added;
 - the local operator console visibly says live execution is disabled while the recording uses Preview;
 - the official PR #132 merge claim is visible and accurate;
-- the CI claim is **27 tests / 93.14% total coverage**, with the operator console at 95%;
+- the final CI claim is **33 tests / 93.80% total coverage**;
+- the consented live-proof runner is **99% covered** and the operator console is **95% covered**;
 - the impact calculator is explicitly presented as assumption-driven, not measured customer ROI; and
 - the video remains under three minutes.
 
 ## Strongest possible final version
 
-If a consented live success-path run is completed using `LIVE-SUCCESS-DEMO.md`, update the public evidence console and the video so the success route can be shown as:
+Before rendering the final upload, the strongest remaining improvement is to complete the one-shot consented live-success path in `LIVE-SUCCESS-DEMO.md`:
+
+```bash
+uv run incidentbridge-consented-live-demo \
+  --phone +<AUTHORIZED_E164_NUMBER> \
+  --confirm-consent "I HAVE EXPLICIT CONSENT"
+```
+
+If it succeeds, the public artifact is:
+
+```text
+artifacts/consented-live-success.json
+```
+
+Then update the public evidence console and recording source so the success route can be shown as:
 
 **real CALL-E call + synthetic incident + consenting authorized recipient**
 
 Do not call it a real vendor deployment. The strength of that artifact is that the transport and full success routing are real while the scenario remains privacy-safe and reproducible.
+
+If the live validation does not succeed, do not blindly retry and do not hold the whole submission hostage to it. The existing V2 remains accurate because it clearly labels the acknowledged route as simulation.
 
 ## Upload and Devpost
 
