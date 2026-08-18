@@ -10,6 +10,6 @@ This evidence console exposes all three paths. The first is a real CALL-E provid
 
 The second path is the safe preview. No call exists, and recovery remains human-owned. The third is a deterministic acknowledged simulation: a vendor ticket and status are captured, but even then incident closed remains false until local health checks and the incident commander verify recovery.
 
-The implementation uses the published CALL-E Python SDK at runtime, not a placeholder. Nineteen tests pass with ninety-two point two nine percent coverage. The integration suite sends the real SDK through a loopback HTTP server and verifies the create-call request, bearer authentication, idempotency header, strict schema, and status polling.
+The implementation uses the published CALL-E Python SDK at runtime, not a placeholder. Twenty-one tests pass with ninety-two point three seven percent coverage in GitHub Actions. The integration suite sends the real SDK through a loopback HTTP server and verifies the create-call request, bearer authentication, idempotency header, strict schema, and status polling.
 
 IncidentBridge is open source, MIT licensed, and contributed to CALL-E's official phone-agent repository. It gives operators a reusable pattern for real-world phone automation with consent, exact authorization, duplicate prevention, structured evidence, and a hard human decision boundary.
