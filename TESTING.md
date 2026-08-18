@@ -53,11 +53,11 @@ uv run ruff check .
 uv run pytest --cov=src/incidentbridge --cov-report=term-missing --cov-fail-under=90
 ```
 
-Expected result: 19 tests pass and the enforced coverage gate remains above 90%.
+Expected result: the full regression suite passes and the enforced coverage gate remains above 90%. The repository's GitHub Actions workflow runs these same lint and test commands on pushes to `main` and on pull requests.
 
 The SDK integration test uses the published `calle-ai==0.2.0` package against a loopback HTTP capture server. It verifies that the real SDK performs the create-call request and result poll, including bearer auth, idempotency and the strict result schema, without creating an external phone call during the test suite.
 
-## 5. Inspect the two upstream-review security fixes
+## 5. Inspect the upstream-review and adversarial security fixes
 
 The highest-value regression cases are in `tests/test_policy.py`:
 
@@ -65,8 +65,11 @@ The highest-value regression cases are in `tests/test_policy.py`:
 - mismatched workflow/incident metadata fails closed;
 - mismatched destination fails closed;
 - mismatched call ID fails closed;
-- missing recipient transcript evidence fails closed; and
-- a returned ticket that is not corroborated by recipient transcript evidence fails closed.
+- missing recipient transcript evidence fails closed;
+- a returned ticket that is not corroborated by recipient transcript evidence fails closed;
+- blank and case-variant `unknown` ticket IDs fail closed;
+- a short ticket cannot be "corroborated" merely because it is a substring/prefix of a longer ticket; and
+- punctuation differences such as `SUP-4821` vs `SUP 4821` are tolerated without weakening token equality.
 
 ## 6. Verify independent upstream acceptance
 
@@ -74,6 +77,8 @@ CALL-E maintainers reviewed the contribution and merged it into the official rep
 
 - PR: https://github.com/CALLE-AI/awesome-phone-call-agents/pull/132
 - Official app: https://github.com/CALLE-AI/awesome-phone-call-agents/tree/main/apps/python/incidentbridge
+
+A follow-up hardening branch for ticket corroboration is also maintained in the contributor fork so the official app can receive the same adversarial fix.
 
 ## Optional live execution
 
