@@ -6,6 +6,8 @@ IncidentBridge is a consent-first CALL-E agent for one bounded real-world task: 
 
 - Live evidence console: https://yangyangnovelist-hub.github.io/incidentbridge-calle/
 - Official CALL-E contribution: https://github.com/CALLE-AI/awesome-phone-call-agents/pull/132 — **merged**
+- Official merged app: https://github.com/CALLE-AI/awesome-phone-call-agents/tree/main/apps/python/incidentbridge
+- Safe reproduction path: `TESTING.md`
 - Core safety regression tests: `tests/test_policy.py`
 - Runtime integration: `tests/test_sdk_runtime.py`
 
@@ -16,6 +18,23 @@ The phone-work problem is specific: during a SaaS or data-platform incident, an 
 IncidentBridge removes that bounded phone task without replacing the part that should remain human-owned. CALL-E can collect vendor evidence; local health checks and the human incident commander retain recovery authority.
 
 This is useful beyond the demo because the same pattern applies anywhere an operations team must contact an external provider during an incident while preserving an auditable separation between **what the vendor said** and **whether the system is actually recovered**.
+
+### Why this is not another incident-alerting agent
+
+Incident notification and on-call escalation answer an internal question: **who on our side knows about the incident and owns the next action?**
+
+IncidentBridge starts after that. It answers the external-dependency question: **what does the vendor know, what ticket did they open, what status/ETA/workaround did they give us, and can we trust that those facts came from the exact authorized call?**
+
+That distinction changes the data contract and the safety model:
+
+| Internal incident escalation | IncidentBridge |
+|---|---|
+| calls an on-call responder | calls an authorized external vendor-support destination |
+| asks for acknowledgment / ownership / next action | asks for vendor ticket / status / ETA / workaround / callback window |
+| proves a human on our side has been reached | proves vendor evidence is bound to the exact approved call and corroborated by recipient transcript |
+| may change internal ownership state | **never** changes recovery state or closes the incident |
+
+The product therefore complements PagerDuty-style alerting and internal voice escalation instead of competing with them.
 
 ## 2. Quality of the Idea
 
