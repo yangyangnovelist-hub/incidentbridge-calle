@@ -2,17 +2,39 @@
 
 IncidentBridge is a consent-first CALL-E agent for one bounded real-world task: contact an authorized vendor support line during an incident, collect ticket/status/ETA/workaround facts, and return structured evidence without allowing the phone agent to close the incident.
 
-## Why it matters
+**Fast path for judges**
 
-During SaaS and data-platform incidents, operators lose recovery time waiting on support lines and manually relaying context. IncidentBridge delegates only that conversation while keeping recovery authority with local health checks and a human incident commander.
+- Live evidence console: https://yangyangnovelist-hub.github.io/incidentbridge-calle/
+- Official CALL-E contribution: https://github.com/CALLE-AI/awesome-phone-call-agents/pull/132 — **merged**
+- Core safety regression tests: `tests/test_policy.py`
+- Runtime integration: `tests/test_sdk_runtime.py`
 
-## Why the idea is differentiated
+## 1. Real World Impact
 
-This is not a generic outbound agent or a scripted phone demo. The core product decision is the authority boundary: CALL-E may gather vendor evidence, but it cannot claim recovery, change contracts, retry ambiguously, or close the incident.
+The phone-work problem is specific: during a SaaS or data-platform incident, an operator often has to stop diagnosing the failure, wait on a vendor support line, repeat incident context, then manually carry ticket/status/ETA/workaround facts back into the incident workflow.
 
-The implementation also treats phone automation as a safety-critical state machine rather than a single LLM response. A successful `vendor_acknowledged` result must be bound to the approved workflow, incident, call ID and destination, then corroborated against recipient transcript evidence.
+IncidentBridge removes that bounded phone task without replacing the part that should remain human-owned. CALL-E can collect vendor evidence; local health checks and the human incident commander retain recovery authority.
 
-## Technical implementation
+This is useful beyond the demo because the same pattern applies anywhere an operations team must contact an external provider during an incident while preserving an auditable separation between **what the vendor said** and **whether the system is actually recovered**.
+
+## 2. Quality of the Idea
+
+The non-obvious design choice is not “AI makes a support call.” It is the authority boundary around a real-world side effect.
+
+IncidentBridge treats phone automation as a safety-critical state machine:
+
+1. validate a non-secret incident briefing;
+2. preview the exact task without creating a call;
+3. require exact recipient authorization;
+4. reserve the call durably before dispatch to prevent ambiguous retries;
+5. require a strict structured result;
+6. bind a successful result to workflow + incident + call ID + destination;
+7. corroborate the returned ticket against recipient transcript evidence; and
+8. keep `incident_closed: "false"` until human/local recovery verification.
+
+The contribution is reusable: the official CALL-E repository accepted IncidentBridge as a community app after maintainer review, so the safety pattern is available to other builders rather than existing only as a competition-specific demo.
+
+## 3. Technical Implementation
 
 - Published `calle-ai==0.2.0` SDK is imported and exercised at runtime.
 - Strict structured-result schema for support-desk consent, incident acknowledgment, ticket, status, ETA, workaround and escalation state.
@@ -23,28 +45,41 @@ The implementation also treats phone automation as a safety-critical state machi
 - 19 automated tests pass with 92.29% coverage.
 - Integration tests exercise the actual SDK request/poll boundary through loopback HTTP rather than replacing the SDK with an internal mock.
 
-## Independent upstream review
+### Independent upstream review
 
-CALL-E maintainers reviewed IncidentBridge in `CALLE-AI/awesome-phone-call-agents` PR #132. The review identified two substantive security blockers: incomplete privacy validation across spoken fields and insufficient binding/corroboration of successful terminal results.
+CALL-E maintainers reviewed IncidentBridge in `CALLE-AI/awesome-phone-call-agents` PR #132. The review identified two substantive security blockers:
 
-Both were fixed, regression-tested, and the contribution was merged into the official CALL-E repository on August 17, 2026.
+1. privacy validation did not cover every free-text field entering the spoken task; and
+2. a high-confidence structured result was not sufficiently bound to the approved request or corroborated by recipient evidence.
 
-PR: https://github.com/CALLE-AI/awesome-phone-call-agents/pull/132
+Both were fixed and regression-tested. The contribution was merged into the official CALL-E repository on August 17, 2026.
 
-## Real-world validation
+## 4. Product Experience & Demo
 
-The public repo includes a redacted real-provider run that demonstrates correct fail-closed behavior when the destination cannot complete the support conversation.
+The public judge console intentionally distinguishes three states instead of presenting every path as “live”:
+
+- **Public live-provider boundary:** a real CALL-E call reaches an unavailable voicemail and correctly fails closed without automatic retry.
+- **Authorization preview:** shows the exact task, masked destination and decision boundary while creating no phone call.
+- **Deterministic acknowledged simulation:** makes the complete success route inspectable without misrepresenting simulated data as a live call.
 
 Successful live-call behavior has additionally been validated privately through direct testing, packaged external testing, and testing with randomly selected users. Those call materials are not published because they contain real participant and conversation data.
 
-## Product experience
+The demo narration is reproducible locally using an Apache-2.0 Kokoro-82M voice; no real person is cloned.
 
-- Live evidence console: https://yangyangnovelist-hub.github.io/incidentbridge-calle/
-- Public demo flow covers real boundary evidence, safe preview, deterministic success-path simulation and the human recovery boundary.
-- Demo narration is reproducible locally using an Apache-2.0 Kokoro-82M voice; no real person is cloned.
+## What `vendor_acknowledged` actually means
 
-## What a successful run means
+A successful route requires all of the following:
 
-`vendor_acknowledged` means the correct authorized destination consented to continue, the vendor acknowledged the incident, a ticket identifier was returned, the result was tied to the approved call context, and the ticket was corroborated by recipient transcript evidence.
+- the call completed reliably;
+- the destination matches the exact authorized number;
+- the provider result is bound to the correct workflow and incident;
+- the correct support desk consented after AI disclosure;
+- the vendor acknowledged the incident;
+- a ticket identifier was supplied; and
+- recipient transcript evidence corroborates that ticket.
 
-It never means the incident is closed. `incident_closed` remains `false` until a human verifies service recovery.
+Even then, `incident_closed` remains `false`.
+
+## Why the upstream merge matters
+
+The official merge is not presented as a prize signal. It is independent evidence that the contribution was useful enough for CALL-E maintainers to review in detail, identify real flaws, require fixes, and accept the corrected implementation into their public community repository.
