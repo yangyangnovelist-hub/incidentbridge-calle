@@ -21,6 +21,7 @@ evidence without pretending the service recovered.**
 3. Open the [impact calculator](https://yangyangnovelist-hub.github.io/incidentbridge-calle/impact-calculator.html) and use your own assumptions to estimate operator attention returned by delegating bounded vendor-support phone work.
 4. Run `uv run incidentbridge-web` and open `http://127.0.0.1:8766/` for the local operator surface. Live execution is disabled by default.
 5. Run the safe local reproduction in [`TESTING.md`](TESTING.md). No CALL-E key or external phone call is required for the preview, simulations, operator console, or SDK boundary test.
+6. Join either the consented synthetic validation or operator tabletop in [`PILOT.md`](PILOT.md).
 
 ## Official CALL-E acceptance
 
