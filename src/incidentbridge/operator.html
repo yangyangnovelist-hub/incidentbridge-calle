@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -29,14 +29,14 @@
 <section class="card">
   <h2>Incident request</h2>
   <textarea id="request"></textarea>
-  <div class="actions"><button id="preview">Preview — no call</button><button id="simulate" class="secondary">Simulate acknowledged</button></div>
+  <div class="actions"><button type="button" id="preview">Preview — no call</button><button type="button" id="simulate" class="secondary">Simulate acknowledged</button></div>
   <div class="livebox">
     <h2>Live authorization</h2>
     <p class="hint" id="capability">Checking server capability…</p>
     <label><input id="consent" type="checkbox"> I confirm this business recipient is authorized to receive this AI call.</label>
     <label for="phrase">Type <code>CALL AUTHORIZED</code></label>
     <input id="phrase" type="text" autocomplete="off" placeholder="CALL AUTHORIZED">
-    <div class="actions"><button id="execute" class="live" disabled>Place one authorized CALL-E call</button></div>
+    <div class="actions"><button type="button" id="execute" class="live" disabled>Place one authorized CALL-E call</button></div>
     <div class="warning">A terminal phone result is evidence only. IncidentBridge never sets <code>incident_closed</code> to true.</div>
   </div>
 </section>
