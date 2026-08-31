@@ -70,7 +70,7 @@ if [ -z "${VIDEO:-}" ] || [ ! -f "$VIDEO" ]; then
 fi
 
 echo "Generating narration from the reviewed SRT cues..."
-HF_HUB_DISABLE_XET=1 uv run --script scripts/synthesize-demo-narration.py
+uv run --script scripts/synthesize-demo-narration.py
 
 NARRATION="video/build/narration-kokoro.wav"
 SRT="video/incidentbridge-demo.en.srt"
@@ -81,22 +81,45 @@ if [ ! -f "$NARRATION" ]; then
   exit 1
 fi
 
-echo "Muxing narration and burning English captions..."
-ffmpeg -y \
-  -i "$VIDEO" \
-  -i "$NARRATION" \
-  -vf "subtitles=${SRT}:force_style='FontName=Arial,FontSize=18,Outline=1,Shadow=0,MarginV=24'" \
-  -map 0:v:0 \
-  -map 1:a:0 \
-  -c:v libx264 \
-  -preset medium \
-  -crf 20 \
-  -pix_fmt yuv420p \
-  -c:a aac \
-  -b:a 160k \
-  -movflags +faststart \
-  -shortest \
-  "$OUTPUT"
+if ffmpeg -hide_banner -filters 2>/dev/null | grep -qE '[[:space:]]subtitles[[:space:]]'; then
+  echo "Muxing narration and burning English captions..."
+  ffmpeg -y \
+    -i "$VIDEO" \
+    -i "$NARRATION" \
+    -vf "subtitles=filename='${SRT}':force_style='FontName=Arial,FontSize=18,Outline=1,Shadow=0,MarginV=24'" \
+    -map 0:v:0 \
+    -map 1:a:0 \
+    -c:v libx264 \
+    -preset medium \
+    -crf 20 \
+    -pix_fmt yuv420p \
+    -c:a aac \
+    -b:a 160k \
+    -movflags +faststart \
+    -shortest \
+    "$OUTPUT"
+else
+  echo "FFmpeg subtitles filter unavailable; embedding English captions as a selectable track..."
+  ffmpeg -y \
+    -i "$VIDEO" \
+    -i "$NARRATION" \
+    -i "$SRT" \
+    -map 0:v:0 \
+    -map 1:a:0 \
+    -map 2:0 \
+    -c:v libx264 \
+    -preset medium \
+    -crf 20 \
+    -pix_fmt yuv420p \
+    -c:a aac \
+    -b:a 160k \
+    -c:s mov_text \
+    -metadata:s:s:0 language=eng \
+    -disposition:s:0 default \
+    -movflags +faststart \
+    -shortest \
+    "$OUTPUT"
+fi
 
 DURATION="$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$OUTPUT" 2>/dev/null || true)"
 

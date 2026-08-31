@@ -48,7 +48,7 @@ The script:
 - visits and interacts with the impact calculator;
 - stops the local operator server;
 - regenerates narration from `video/incidentbridge-demo.en.srt` using Kokoro-82M;
-- burns English captions into the video; and
+- burns English captions into the video when FFmpeg has libass support, otherwise embeds them as a selectable English caption track; and
 - produces an H.264/AAC MP4 suitable for YouTube or Vimeo.
 
 The build script never passes `--enable-live-ui`, never supplies a phone allowlist, and therefore cannot place a phone call while recording.
