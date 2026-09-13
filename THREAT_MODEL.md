@@ -56,7 +56,7 @@ The application can enforce that a caller asserted recipient authorization and m
 
 The threat controls above are exercised by the automated suite, including adversarial cases for unauthorized input, secret-bearing spoken fields, wrong desk, low confidence, incomplete results, mismatched metadata/destination/call ID, missing recipient evidence, wrong ticket, blank ticket, case-variant `unknown`, prefix false matches, punctuation-tolerant legitimate ticket matching, recursive redaction, idempotency, durable reservation, and the real SDK HTTP boundary.
 
-GitHub Actions currently verifies Ruff plus **33 passing tests at 93.80% coverage**, with a 90% coverage gate.
+GitHub Actions currently verifies Ruff plus **63 passing tests at 94.27% coverage**, with a 90% coverage gate.
 
 ## Deliberate non-goal
 

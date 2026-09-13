@@ -91,7 +91,7 @@ For a public real-success proof, `incidentbridge-consented-live-demo` fixes the 
 - Ticket corroboration rejects blank/`unknown` IDs and prefix/sub-string false matches while tolerating punctuation differences such as `SUP-4821` vs `SUP 4821`.
 - The local browser operator surface uses server-side live permissions, exact-number allowlisting, typed confirmation, loopback-only live binding, and non-loopback Host rejection while reusing the same execution path as the CLI.
 - The one-shot consented live runner is fixed to synthetic incident content, refuses to overwrite existing public proof, creates no public success artifact on a failed/ambiguous route, and instructs the operator not to blindly retry.
-- **GitHub Actions verified Ruff plus 33 passing tests at 93.80% total coverage**, above the enforced 90% gate. The live runner is 99% covered and operator console 95% covered.
+- **GitHub Actions verified Ruff plus 63 passing tests at 94.27% total coverage**, above the enforced 90% gate. The live runner is 99% covered and operator console 95% covered.
 - CI also syntax-checks the judge-focused Playwright recording source and demo build script.
 - Integration tests exercise the actual SDK request/poll boundary through loopback HTTP rather than replacing the SDK with an internal mock.
 

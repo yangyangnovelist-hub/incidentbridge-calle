@@ -1,3 +1,5 @@
+import pytest
+
 from incidentbridge.models import mask_phone, parse_request
 from incidentbridge.policy import (
     build_task,
@@ -228,3 +230,33 @@ def test_idempotency_and_recursive_redaction():
     assert "abc123" not in rendered
     assert "sekret-value" not in rendered
     assert "qwerty" not in rendered
+
+
+@pytest.mark.parametrize("wrapped", [False, True], ids=["scalar", "score-object"])
+@pytest.mark.parametrize(
+    ("score", "accepted"),
+    [
+        pytest.param(float("nan"), False, id="nan"),
+        pytest.param(float("inf"), False, id="positive-infinity"),
+        pytest.param(float("-inf"), False, id="negative-infinity"),
+        pytest.param(1.01, False, id="above-probability-range"),
+        pytest.param(-0.01, False, id="below-probability-range"),
+        pytest.param(10**400, False, id="integer-overflow"),
+        pytest.param(True, False, id="boolean"),
+        pytest.param("0.95", False, id="numeric-string"),
+        pytest.param(None, False, id="missing-score"),
+        pytest.param({"score": None}, False, id="nested-missing-score"),
+        pytest.param(0, False, id="zero"),
+        pytest.param(0.799999, False, id="below-threshold"),
+        pytest.param(0.8, True, id="at-threshold"),
+        pytest.param(0.95, True, id="normal-confidence"),
+        pytest.param(1, True, id="one"),
+    ],
+)
+def test_provider_confidence_must_be_a_bounded_probability(score, accepted, wrapped):
+    request = parse_request(RAW)
+    response = bound_provider_result()
+    response["completion_confidence"] = {"score": score, "label": "high"} if wrapped else score
+    decision = route_result(request, response, expected_call_id=response["id"])
+    assert decision["route"] == ("vendor_acknowledged" if accepted else "needs_human")
+    assert decision["incident_closed"] == "false"

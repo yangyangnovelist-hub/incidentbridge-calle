@@ -66,7 +66,7 @@ conversation data.
 
 Current reproducible checks:
 
-- GitHub Actions verifies Ruff plus **33 automated tests at 93.80% total coverage**, above the enforced 90% gate.
+- GitHub Actions verifies Ruff plus **63 automated tests at 94.27% total coverage**, above the enforced 90% gate.
 - The consented live-demo runner is 99% covered and emits public proof only after a real `vendor_acknowledged` route.
 - The local operator console is 95% covered and reuses the same guarded execution path as the CLI.
 - CI also syntax-checks the judge-focused Playwright recording source and demo build shell script.
@@ -220,7 +220,7 @@ asserts the observed `POST /v1/calls`, bearer authentication, idempotency header
 `GET /v1/calls/{id}` poll. It proves CALL-E is imported and called at runtime without placing a real
 phone call during tests.
 
-The final award-sprint CI run reports **33 passed, 93.80% total coverage**, with the consented
+The current CI run reports **63 passed, 94.27% total coverage**, with the consented
 live-demo runner at 99% and the operator console at 95% coverage.
 
 ## Verified public live boundary
