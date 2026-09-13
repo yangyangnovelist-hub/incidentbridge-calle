@@ -61,7 +61,7 @@ Watch the entire MP4 once and confirm:
 - the acknowledged public-browser scenario is clearly labeled as simulation unless a public consented live success artifact has been added;
 - the local operator console visibly says live execution is disabled while the recording uses Preview;
 - the official PR #132 merge claim is visible and accurate;
-- the final CI claim is **33 tests / 93.80% total coverage**;
+- the final CI claim is **63 tests / 94.27% total coverage**;
 - the consented live-proof runner is **99% covered** and the operator console is **95% covered**;
 - the impact calculator is explicitly presented as assumption-driven, not measured customer ROI; and
 - the video remains under three minutes.

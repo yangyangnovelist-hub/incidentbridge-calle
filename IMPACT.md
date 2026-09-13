@@ -95,7 +95,7 @@ Publicly reproducible evidence currently shows:
 - a real CALL-E provider call ID on an authorized fail-closed path;
 - deterministic inspection of the complete acknowledged route;
 - runtime use of the published CALL-E Python SDK;
-- 33 automated tests at 93.80% coverage with a 90% CI gate; and
+- 63 automated tests at 94.27% coverage with a 90% CI gate; and
 - independent CALL-E maintainer review followed by merge into the official community repository.
 
 Successful live-call behavior has also been tested privately, but private participant/conversation materials are not used as public impact statistics.

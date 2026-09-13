@@ -12,7 +12,7 @@ The key safety decision is that **calls become evidence, never authority**. CALL
 
 This is a real CALL-E integration, not a mock transport. The published `calle-ai==0.2.0` SDK is imported and called at runtime. The implementation has been independently reviewed by CALL-E maintainers and merged into the official `CALLE-AI/awesome-phone-call-agents` repository as PR #132 after two substantive security blockers were identified, fixed, and regression-tested.
 
-Current GitHub Actions verification: **33 passing tests, 93.80% coverage, Ruff clean, 90% coverage gate enforced.**
+Current GitHub Actions verification: **63 passing tests, 94.27% coverage, Ruff clean, 90% coverage gate enforced.**
 
 ## Inspiration
 
@@ -101,8 +101,8 @@ uv run pytest --cov=src/incidentbridge --cov-report=term-missing --cov-fail-unde
 
 Verified result:
 
-- **33 tests passed**
-- **93.80% total coverage**
+- **63 tests passed**
+- **94.27% total coverage**
 - **90% minimum coverage gate**
 - **Ruff clean**
 
@@ -140,7 +140,7 @@ A third challenge was privacy. The maintainer review caught that protecting only
 - Passed independent CALL-E maintainer review after fixing two substantive security blockers.
 - Merged IncidentBridge into the official CALL-E community repository.
 - Hardened ticket evidence against blank IDs, `unknown`, and substring/prefix false corroboration.
-- Added continuous GitHub Actions verification: 33 tests, 93.80% coverage, Ruff clean.
+- Added continuous GitHub Actions verification: 63 tests, 94.27% coverage, Ruff clean.
 - Published an impact-first evidence console and a safe judge reproduction path.
 
 ## What we learned

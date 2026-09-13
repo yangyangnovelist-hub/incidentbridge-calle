@@ -89,8 +89,8 @@ uv run pytest --cov=src/incidentbridge --cov-report=term-missing --cov-fail-unde
 Final award-sprint GitHub Actions result:
 
 ```text
-33 passed
-93.80% total coverage
+63 passed
+94.27% total coverage
 99% coverage for src/incidentbridge/live_demo.py
 95% coverage for src/incidentbridge/web.py
 Ruff: all checks passed

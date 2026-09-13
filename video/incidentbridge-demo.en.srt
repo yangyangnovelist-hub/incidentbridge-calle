@@ -56,7 +56,7 @@ They found two substantive safety blockers: incomplete privacy validation and in
 
 15
 00:01:50,000 --> 00:01:57,000
-Final GitHub Actions verification is thirty-three passing tests at ninety-three point eight zero percent total coverage, with a ninety percent enforced gate.
+Current GitHub Actions verification is sixty-three passing tests at ninety-four point two seven percent total coverage, with a ninety percent enforced gate.
 
 16
 00:01:57,120 --> 00:02:06,000
